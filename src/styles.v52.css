@@ -1,0 +1,4599 @@
+:root {
+  --bg: #fffaf2;
+  --surface: #ffffff;
+  --surface-soft: #fff3dd;
+  --text: #2f271f;
+  --muted: #77685a;
+  --primary: #e86f2d;
+  --primary-dark: #c95018;
+  --accent: #2f9b7b;
+  --line: #eadcc8;
+  --shadow: 0 18px 45px rgba(98, 63, 22, .12);
+  --radius: 22px;
+}
+
+:root.dark {
+  --bg: #17130f;
+  --surface: #231d18;
+  --surface-soft: #30261f;
+  --text: #fff4e7;
+  --muted: #cbbdab;
+  --primary: #ff914d;
+  --primary-dark: #ffb17c;
+  --accent: #63d2af;
+  --line: #43352a;
+  --shadow: 0 18px 45px rgba(0, 0, 0, .35);
+}
+
+* { box-sizing: border-box; }
+
+/* 修复：部分浏览器会被 .modal-backdrop 的 display:grid 覆盖 hidden 属性，
+   导致空弹窗默认显示且关闭按钮无效。 */
+[hidden] {
+  display: none !important;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(232, 111, 45, .16), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(47, 155, 123, .13), transparent 30%),
+    var(--bg);
+  min-height: 100vh;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.hero {
+  padding: 22px min(5vw, 70px) 34px;
+}
+
+.topbar, .hero-grid, .layout, .help {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 42px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 26px;
+}
+.brand strong {
+  display: block;
+  font-size: 20px;
+}
+.brand small {
+  color: var(--muted);
+}
+
+.top-actions {
+  display: flex;
+  gap: 10px;
+}
+.top-tabs {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+.top-tabs .tab {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.55);
+  box-shadow: none;
+}
+.top-tabs .tab.active {
+  border-color: var(--text);
+}
+.ghost-btn {
+  min-height: 42px;
+  padding: 0 16px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.55);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, .65fr);
+  gap: 28px;
+  align-items: stretch;
+}
+.hero-copy {
+  padding: 40px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.72);
+  backdrop-filter: blur(14px);
+  border-radius: 34px;
+  box-shadow: var(--shadow);
+}
+:root.dark .hero-copy,
+:root.dark .ghost-btn,
+:root.dark .stats-card {
+  background: rgba(35, 29, 24, .74);
+}
+.eyebrow {
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 700;
+}
+.hero h1 {
+  margin: 10px 0 14px;
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: 1.03;
+  letter-spacing: -0.04em;
+}
+.hero-copy > p:not(.eyebrow) {
+  max-width: 720px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.searchbar {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 20px;
+}
+.searchbar input {
+  border: 0;
+  outline: 0;
+  padding: 12px 14px;
+  background: transparent;
+  color: var(--text);
+}
+.searchbar button, .pill-btn, .inline-input button, .package-controls button {
+  padding: 12px 18px;
+  border-radius: 15px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 10px 24px rgba(232, 111, 45, .24);
+}
+.pill-btn.secondary, .quick-row button, .tab, .link-btn { background: transparent; color: var(--primary-dark); padding: 0; box-shadow: none; }
+.card-action.secondary {
+  color: var(--text);
+  background: var(--surface-soft);
+  box-shadow: none;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.stats-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 26px;
+  border: 1px solid var(--line);
+  border-radius: 34px;
+  background: rgba(255,255,255,.72);
+  box-shadow: var(--shadow);
+}
+.stat {
+  padding: 22px;
+  border-radius: 24px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.stat span {
+  font-size: 42px;
+  font-weight: 900;
+  color: var(--primary);
+}
+.stat em {
+  color: var(--muted);
+  font-style: normal;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 370px 1fr;
+  gap: 24px;
+  padding: 0 min(5vw, 70px) 48px;
+}
+
+.filters {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+}
+:root.dark .filters, :root.dark .content, :root.dark .help, :root.dark .tool-card {
+  background: rgba(35, 29, 24, .78);
+}
+.filter-header, .result-toolbar, .tabs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.filter-header h2, .result-toolbar h2, .tool-card h2 {
+  margin: 0;
+}
+.badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(47, 155, 123, .14);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+}
+.filter-section {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.section-title {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  color: var(--text);
+  background: transparent;
+  font-weight: 800;
+}
+.section-body {
+  padding: 0 16px 16px;
+}
+.inline-input, .package-controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+.inline-input input, .package-controls select, .select-line select, .select-line input, .range-grid input {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 13px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  padding: 0 12px;
+  outline: none;
+}
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.option-group {
+  margin-top: 16px;
+}
+.option-group h3 {
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.checkbox-grid.dense {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.check, .checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  font-size: 13px;
+}
+.check input, .checkbox-grid input { accent-color: var(--primary); }
+
+.range-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.range-grid label, .select-line, .package-controls label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.quick-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.quick-row button {
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.chip-row, .active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.chip-row.empty {
+  color: var(--muted);
+  font-size: 13px;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(232, 111, 45, .12);
+  color: var(--primary-dark);
+  font-weight: 700;
+  font-size: 13px;
+}
+.chip button {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: inherit;
+  background: rgba(232, 111, 45, .15);
+}
+
+.content {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255,255,255,.82);
+  box-shadow: var(--shadow);
+}
+.tabs {
+  justify-content: flex-start;
+  overflow: auto;
+  padding-bottom: 8px;
+}
+.tab {
+  padding: 12px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.tab.active {
+  color: #fff;
+  background: var(--text);
+}
+.tab-panel {
+  display: none;
+  padding-top: 18px;
+}
+.tab-panel.active {
+  display: block;
+}
+.result-toolbar {
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.result-toolbar p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+  gap: 16px;
+}
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.recipe-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(80, 55, 28, .12);
+}
+.card-visual {
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, #e86f2d, #2f9b7b);
+}
+
+.card-visual img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+.dish-photo {
+  position: relative;
+  z-index: 1;
+  width: min(300px, 78%);
+  aspect-ratio: 1.35 / 1;
+  object-fit: cover;
+  border-radius: 34px;
+  border: 1px solid rgba(255,255,255,.55);
+  box-shadow: 0 20px 45px rgba(59,36,17,.18);
+}
+.detail-cover {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 22px;
+  margin: 10px 0 14px;
+}
+
+.card-visual span {
+  display: block;
+  font-size: 40px;
+}
+.card-body {
+  flex: 1;
+  padding: 16px;
+}
+.card-body h3 {
+  margin: 0 0 8px;
+  font-size: 20px;
+}
+.meta-line, .ingredient-line {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+.tag {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+}
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
+.card-action, .link-btn {
+  padding: 10px 12px;
+  border-radius: 13px;
+  background: var(--primary);
+  color: #fff;
+}
+.link-btn { background: transparent; color: var(--primary-dark); padding: 0; box-shadow: none; }
+.card-action.secondary {
+  border: 1px solid var(--line);
+}
+.card-action.faved {
+  color: #fff;
+  background: #d84646;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 52px 20px;
+  border: 1px dashed var(--line);
+  border-radius: 24px;
+  color: var(--muted);
+}
+
+.tool-card, .help {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--surface);
+}
+.mini-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.mini-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+.package-controls {
+  grid-template-columns: minmax(220px, 360px) auto;
+  align-items: end;
+  margin: 18px 0;
+}
+.package-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.package-card {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+}
+.package-card h3 { margin-top: 0; }
+.package-card ul {
+  padding-left: 20px;
+  line-height: 1.8;
+}
+.package-total {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.help {
+  margin: 0 min(5vw, 70px) 50px;
+}
+.help-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.help article {
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--surface-soft);
+}
+.help p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(0, 0, 0, .48);
+}
+.modal {
+  position: relative;
+  width: min(880px, 100%);
+  max-height: min(86vh, 900px);
+  overflow: auto;
+  border-radius: 28px;
+  background: var(--surface);
+  box-shadow: 0 30px 90px rgba(0,0,0,.35);
+}
+.modal-close {
+  position: sticky;
+  top: 12px;
+  float: right;
+  z-index: 2;
+  margin: 12px 12px 0 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--text);
+  background: var(--surface-soft);
+  font-size: 26px;
+}
+.modal-content {
+  padding: 30px;
+}
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 34px;
+}
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 20px;
+}
+.detail-box {
+  padding: 16px;
+  border-radius: 20px;
+  background: var(--surface-soft);
+}
+.detail-box h3 {
+  margin-top: 0;
+}
+.steps {
+  counter-reset: step;
+  display: grid;
+  gap: 10px;
+  padding-left: 0;
+  list-style: none;
+}
+.steps li {
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--surface-soft);
+  line-height: 1.7;
+}
+
+.toast {
+  position: fixed;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 1050px) {
+  .hero-grid, .layout { grid-template-columns: 1fr; }
+  .filters { position: static; max-height: none; }
+}
+@media (max-width: 720px) {
+  .hero { padding-inline: 14px; }
+  .hero-copy { padding: 24px; border-radius: 26px; }
+  .layout, .help { padding-inline: 14px; margin-inline: 0; }
+  .stats-card { grid-template-columns: 1fr 1fr; padding: 14px; }
+  .stat { padding: 16px; }
+  .searchbar, .inline-input, .package-controls { grid-template-columns: 1fr; }
+  .help-grid, .detail-grid { grid-template-columns: 1fr; }
+  .checkbox-grid, .checkbox-grid.dense { grid-template-columns: 1fr; }
+}
+
+/* v2 productized homepage */
+.hero-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+}
+.hero-copy {
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pill-btn.secondary {
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--primary-dark);
+  box-shadow: none;
+}
+.quick-row button {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  color: var(--primary-dark);
+  box-shadow: none;
+}
+.link-btn {
+  color: var(--primary-dark);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.featured-card {
+  min-height: 460px;
+  border: 1px solid var(--line);
+  border-radius: 34px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.featured-skeleton {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  color: var(--muted);
+}
+.featured-visual {
+  min-height: 160px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #fff;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,.32), transparent 30%),
+    linear-gradient(135deg, var(--primary), var(--accent));
+}
+.featured-visual span {
+  display: block;
+  font-size: 54px;
+  margin-bottom: 8px;
+}
+.featured-body {
+  padding: 24px;
+}
+.featured-body h2 {
+  margin: 8px 0;
+  font-size: 30px;
+}
+.featured-label {
+  display: inline-flex;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(47, 155, 123, .12);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+.featured-reason {
+  color: var(--muted);
+  line-height: 1.7;
+}
+.home-recs {
+  max-width: 1440px;
+  margin: 24px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.home-recs article {
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  background: rgba(255,255,255,.72);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+:root.dark .home-recs article, :root.dark .featured-card {
+  background: rgba(35, 29, 24, .78);
+}
+.rec-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-weight: 900;
+}
+.mini-rec-list {
+  display: grid;
+  gap: 10px;
+}
+.mini-rec {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 16px;
+  background: var(--surface-soft);
+}
+.mini-rec .mini-emoji {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--surface);
+}
+.mini-rec strong {
+  display: block;
+  font-size: 14px;
+}
+.mini-rec small {
+  display: block;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.data-overview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0 18px;
+}
+.data-overview span {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--muted);
+}
+.data-overview strong {
+  color: var(--primary);
+}
+.ai-card > p {
+  color: var(--muted);
+  line-height: 1.7;
+}
+.ai-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: stretch;
+  margin-top: 16px;
+}
+.ai-form textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 96px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--text);
+  padding: 14px;
+  outline: none;
+  line-height: 1.6;
+}
+.ai-form button {
+  padding: 0 20px;
+  border-radius: 16px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+.ai-result {
+  margin-top: 16px;
+  text-align: left;
+}
+.ai-answer {
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--surface-soft);
+}
+.ai-answer h3 { margin: 0 0 10px; }
+.ai-answer p { color: var(--muted); line-height: 1.8; }
+.ai-picks {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.ai-answer-loading {
+  border: 1px dashed var(--line);
+}
+.ai-source-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.ai-source-pill.local {
+  background: var(--surface-soft);
+}
+.ai-needs {
+  margin: 10px 0 4px;
+}
+.ai-tips {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.ai-pick {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--surface);
+}
+.package-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+@media (max-width: 1050px) {
+  .home-recs { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .ai-form { grid-template-columns: 1fr; }
+  .ai-form button { min-height: 46px; }
+  .mini-rec { grid-template-columns: auto 1fr; }
+  .mini-rec button { grid-column: 1 / -1; justify-self: start; }
+}
+
+
+/* v3 homepage UX refinement: product-like hero carousel */
+.hero {
+  padding-top: 20px;
+}
+.hero-grid {
+  grid-template-columns: minmax(0, .92fr) minmax(360px, 1.08fr);
+  align-items: stretch;
+}
+.hero-copy {
+  min-height: 430px;
+}
+.hero h1 {
+  font-size: clamp(42px, 7vw, 78px);
+}
+.hero-copy > p:not(.eyebrow) {
+  max-width: 620px;
+  font-size: 17px;
+}
+.searchbar {
+  margin-top: 28px;
+  border-radius: 999px;
+  padding: 8px 8px 8px 14px;
+}
+.searchbar input {
+  font-size: 16px;
+}
+.carousel-card {
+  min-height: 430px;
+  display: grid;
+  grid-template-rows: minmax(210px, 1.2fr) auto;
+}
+.carousel-visual {
+  position: relative;
+  min-height: 230px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 18% 15%, rgba(255,255,255,.35), transparent 28%),
+    radial-gradient(circle at 86% 25%, rgba(255,255,255,.18), transparent 22%),
+    linear-gradient(135deg, var(--primary), var(--accent));
+}
+.carousel-visual::after {
+  content: "";
+  position: absolute;
+  inset: auto -8% -45% -8%;
+  height: 70%;
+  border-radius: 50% 50% 0 0;
+  background: rgba(255,255,255,.16);
+}
+.dish-photo-placeholder {
+  position: relative;
+  z-index: 1;
+  width: min(260px, 72%);
+  aspect-ratio: 1.35 / 1;
+  display: grid;
+  place-items: center;
+  border-radius: 34px;
+  border: 1px solid rgba(255,255,255,.48);
+  background: rgba(255,255,255,.18);
+  box-shadow: inset 0 0 60px rgba(255,255,255,.15), 0 20px 45px rgba(59,36,17,.16);
+  backdrop-filter: blur(8px);
+}
+.dish-photo-placeholder span {
+  display: block;
+  font-size: 74px;
+  line-height: 1;
+}
+.dish-photo-placeholder small {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  opacity: .86;
+}
+.carousel-nav {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(0,0,0,.18);
+  font-size: 34px;
+  line-height: 1;
+}
+.carousel-nav.prev { left: 18px; }
+.carousel-nav.next { right: 18px; }
+.carousel-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+.carousel-dots {
+  display: inline-flex;
+  gap: 7px;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--line);
+}
+.dot.active {
+  width: 24px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+.home-recs article {
+  background: rgba(255,255,255,.82);
+}
+.help {
+  margin-top: 8px;
+}
+@media (max-width: 1050px) {
+  .hero-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .hero-copy, .carousel-card { min-height: auto; }
+  .searchbar { border-radius: 22px; }
+  .carousel-visual { min-height: 210px; }
+  .carousel-bottom { align-items: flex-start; flex-direction: column; }
+}
+
+
+/* Detail page: replaces the old popup with a Xiachufang-style recipe page. */
+.detail-page {
+  max-width: 1180px;
+  margin: -40px auto 60px;
+  padding: 0 22px;
+}
+.recipe-detail-page {
+  background: rgba(255,255,255,.94);
+  border: 1px solid var(--line);
+  border-radius: 34px;
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+.detail-hero {
+  display: grid;
+  grid-template-columns: minmax(380px, 620px) 1fr;
+  gap: 36px;
+  align-items: start;
+}
+.detail-hero-photo {
+  overflow: hidden;
+  border-radius: 28px;
+  background: #fff4e6;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.6);
+}
+.detail-hero-photo img {
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+  display: block;
+}
+.detail-no-photo {
+  min-height: 460px;
+  display: grid;
+  place-items: center;
+  font-size: 72px;
+}
+.detail-hero-info h1 {
+  margin: 4px 0 14px;
+  font-size: clamp(32px, 5vw, 54px);
+  letter-spacing: -.04em;
+}
+.detail-summary {
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.8;
+}
+.detail-tags { margin: 18px 0; }
+.detail-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0 18px;
+}
+.detail-stat-row div {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 16px;
+  background: #fffaf4;
+}
+.detail-stat-row strong {
+  display: block;
+  font-size: 20px;
+  color: var(--text);
+}
+.detail-stat-row span {
+  color: var(--muted);
+  font-size: 13px;
+}
+.detail-main-grid {
+  display: grid;
+  grid-template-columns: 310px 1fr;
+  gap: 30px;
+  margin-top: 34px;
+  align-items: start;
+}
+.ingredient-panel,
+.steps-panel,
+.photo-gallery-section,
+.related-section {
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.ingredient-panel {
+  position: sticky;
+  top: 18px;
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  padding: 22px;
+  background: #fffdf9;
+}
+.ingredient-panel h2,
+.steps-panel h2,
+.photo-gallery-section h2,
+.related-section h2 {
+  margin: 0 0 18px;
+  font-size: 24px;
+}
+.ingredient-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ingredient-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.ingredient-list li:last-child { border-bottom: 0; }
+.ingredient-list span { font-weight: 800; }
+.ingredient-list em {
+  color: var(--muted);
+  font-style: normal;
+  text-align: right;
+}
+.detail-step-list {
+  list-style: none;
+  counter-reset: step;
+  padding: 0;
+  margin: 0;
+}
+.detail-step-list li {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 18px;
+  padding: 0 0 30px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--line);
+}
+.step-index {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 900;
+}
+.step-body p {
+  margin: 6px 0 16px;
+  font-size: 17px;
+  line-height: 1.9;
+}
+.step-body img {
+  width: 100%;
+  max-height: 680px;
+  object-fit: cover;
+  border-radius: 24px;
+  display: block;
+  background: #fff4e6;
+}
+.photo-gallery-section,
+.related-section { margin-top: 28px; }
+.detail-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 14px;
+}
+.detail-gallery img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 18px;
+  background: #fff4e6;
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+body.detail-mode .hero,
+body.detail-mode .help,
+body.detail-mode .layout {
+  display: none !important;
+}
+body.detail-mode {
+  background: linear-gradient(135deg, #fff7ed 0%, #fffaf4 48%, #f0f9f2 100%);
+}
+body.detail-mode .detail-page {
+  max-width: 1180px;
+  margin: 28px auto 60px;
+  padding: 0 22px;
+}
+.dark .recipe-detail-page,
+.dark .ingredient-panel { background: rgba(26, 20, 18, .96); }
+.dark .detail-stat-row div { background: rgba(255,255,255,.05); }
+@media (max-width: 900px) {
+  .detail-hero,
+  .detail-main-grid { grid-template-columns: 1fr; }
+  .ingredient-panel { position: static; }
+  .detail-hero-photo img { height: 380px; }
+}
+@media (max-width: 640px) {
+  .recipe-detail-page { padding: 18px; border-radius: 24px; }
+  .detail-stat-row { grid-template-columns: 1fr; }
+  .detail-step-list li { grid-template-columns: 1fr; }
+}
+
+
+/* V14：详情页图片与信息布局优化
+   - 封面图区域更宽，减少右侧信息卡占位
+   - 详情文字更紧凑，减少频繁换行
+   - 步骤图按 4:3 大图展示，减少图片容器背景外露
+*/
+body.detail-mode .detail-page {
+  max-width: 1360px;
+  padding: 0 18px;
+}
+
+body.detail-mode .recipe-detail-page {
+  padding: 24px;
+}
+
+body.detail-mode .detail-hero {
+  grid-template-columns: minmax(680px, 2.2fr) minmax(270px, .8fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+body.detail-mode .detail-hero-photo {
+  border-radius: 30px;
+  background: transparent;
+}
+
+body.detail-mode .detail-hero-photo img {
+  height: clamp(540px, 58vh, 720px);
+  width: 100%;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 30px;
+}
+
+body.detail-mode .detail-hero-info {
+  align-self: stretch;
+  padding: 4px 0;
+}
+
+body.detail-mode .detail-hero-info .eyebrow {
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+body.detail-mode .detail-hero-info h1 {
+  font-size: clamp(30px, 3.2vw, 44px);
+  line-height: 1.08;
+  margin: 2px 0 10px;
+  letter-spacing: -0.035em;
+}
+
+body.detail-mode .detail-summary {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0 0 10px;
+}
+
+body.detail-mode .detail-tags {
+  margin: 10px 0 12px;
+  gap: 6px;
+}
+
+body.detail-mode .detail-tags .tag {
+  font-size: 12px;
+  padding: 5px 9px;
+}
+
+body.detail-mode .detail-stat-row {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 12px 0 10px;
+}
+
+body.detail-mode .detail-stat-row div {
+  padding: 10px 12px;
+  border-radius: 16px;
+}
+
+body.detail-mode .detail-stat-row strong {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+body.detail-mode .detail-stat-row span,
+body.detail-mode .meta-line {
+  font-size: 12px;
+}
+
+body.detail-mode .detail-main-grid {
+  grid-template-columns: 280px 1fr;
+  gap: 22px;
+  margin-top: 24px;
+}
+
+body.detail-mode .ingredient-panel {
+  padding: 18px;
+}
+
+body.detail-mode .ingredient-list li {
+  gap: 10px;
+}
+
+body.detail-mode .ingredient-list span,
+body.detail-mode .ingredient-list em {
+  font-size: 13px;
+}
+
+body.detail-mode .detail-step-list li {
+  grid-template-columns: 38px 1fr;
+  gap: 14px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+}
+
+body.detail-mode .step-index {
+  width: 38px;
+  height: 38px;
+  font-size: 15px;
+}
+
+body.detail-mode .step-body p {
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 3px 0 12px;
+}
+
+body.detail-mode .step-body img {
+  width: 100%;
+  max-width: 920px;
+  aspect-ratio: 4 / 3;
+  height: auto;
+  max-height: none;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 26px;
+  background: transparent;
+}
+
+@media (max-width: 1000px) {
+  body.detail-mode .detail-hero,
+  body.detail-mode .detail-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.detail-mode .detail-hero-photo img {
+    height: clamp(420px, 52vh, 620px);
+  }
+
+  body.detail-mode .detail-stat-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  body.detail-mode .ingredient-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  body.detail-mode .recipe-detail-page {
+    padding: 16px;
+  }
+
+  body.detail-mode .detail-hero-photo img {
+    height: 360px;
+  }
+
+  body.detail-mode .detail-stat-row {
+    grid-template-columns: 1fr;
+  }
+
+  body.detail-mode .detail-step-list li {
+    grid-template-columns: 1fr;
+  }
+
+  body.detail-mode .step-body img {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+
+/* V15：结果卡片和详情页图片去边框/去留白优化
+   1. 结果列表卡片顶部图片不再放在带 padding 的彩色框里，避免四周露出粗边框。
+   2. 图片统一铺满卡片顶部区域，使用 cover 裁切，比 contain 更适合菜品封面展示。
+   3. 详情页步骤图也去掉明显背景框，只保留轻微圆角和阴影。
+*/
+.recipe-card {
+  border-radius: 22px;
+  overflow: hidden;
+}
+.card-visual {
+  position: relative;
+  min-height: 0;
+  height: 190px;
+  padding: 0 !important;
+  overflow: hidden;
+  background: #f8efe1;
+  border-radius: 0;
+}
+.card-visual img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center center;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+.card-visual span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 42px;
+}
+.card-body {
+  padding: 14px 16px 12px;
+}
+.card-body h3 {
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+.recipe-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+/* 详情页首图：尽量铺满，不再露出底色边框 */
+body.detail-mode .detail-hero-photo {
+  padding: 0 !important;
+  overflow: hidden;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+body.detail-mode .detail-hero-photo img {
+  display: block;
+  width: 100%;
+  height: clamp(560px, 62vh, 760px);
+  object-fit: cover;
+  object-position: center center;
+  border-radius: 28px;
+  border: 0 !important;
+}
+
+/* 步骤图：占据更宽区域，减少上下左右空白感 */
+body.detail-mode .step-body img {
+  display: block;
+  width: min(100%, 980px);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: center center;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: 0 10px 24px rgba(80, 55, 28, .10);
+}
+
+@media (max-width: 760px) {
+  .card-visual { height: 170px; }
+  .recipe-grid { grid-template-columns: 1fr; }
+  body.detail-mode .detail-hero-photo img { height: 360px; }
+  body.detail-mode .step-body img { aspect-ratio: 4 / 3; }
+}
+
+
+/* V17：参考下厨房的紧凑排版
+   目标：
+   1. 整体页面不要铺得过大，主内容区收窄；
+   2. 首页、筛选区、卡片字号和间距整体缩小；
+   3. 列表页保留 V15 的无粗边框图片效果；
+   4. 详情页恢复为中等尺寸：首图不铺满屏幕，步骤图不巨大化。
+*/
+:root {
+  --radius: 18px;
+}
+
+/* 全局内容宽度收紧，避免 2K/大屏下显得过大 */
+.topbar,
+.hero-grid,
+.layout,
+.help {
+  max-width: 1120px !important;
+}
+
+.hero {
+  padding: 16px min(4vw, 42px) 24px !important;
+}
+
+.topbar {
+  margin-bottom: 22px !important;
+}
+
+.brand-mark {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 12px !important;
+  font-size: 21px !important;
+}
+
+.brand strong {
+  font-size: 16px !important;
+}
+
+.brand small {
+  font-size: 12px !important;
+}
+
+.ghost-btn {
+  min-height: 36px !important;
+  padding: 0 13px !important;
+  font-size: 13px !important;
+}
+
+.hero-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(300px, .95fr) !important;
+  gap: 20px !important;
+}
+
+.hero-copy {
+  padding: 28px !important;
+  border-radius: 26px !important;
+}
+
+.eyebrow {
+  font-size: 11px !important;
+}
+
+.hero h1 {
+  font-size: clamp(34px, 4vw, 50px) !important;
+  margin: 8px 0 12px !important;
+}
+
+.hero-copy > p:not(.eyebrow) {
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+.searchbar {
+  margin-top: 18px !important;
+  border-radius: 18px !important;
+}
+
+.searchbar input {
+  padding: 10px 12px !important;
+  font-size: 14px !important;
+}
+
+.searchbar button,
+.pill-btn,
+.inline-input button,
+.package-controls button {
+  padding: 10px 16px !important;
+  border-radius: 13px !important;
+  font-size: 14px !important;
+}
+
+.layout {
+  grid-template-columns: 300px 1fr !important;
+  gap: 18px !important;
+  padding: 0 min(4vw, 42px) 38px !important;
+}
+
+.filters {
+  padding: 15px !important;
+  border-radius: 22px !important;
+}
+
+.filter-header h2,
+.result-toolbar h2,
+.tool-card h2 {
+  font-size: 21px !important;
+}
+
+.filter-section {
+  border-radius: 18px !important;
+}
+
+.filter-title {
+  padding: 13px 14px !important;
+  font-size: 15px !important;
+}
+
+.checkbox-grid {
+  gap: 8px !important;
+}
+
+.checkbox-pill {
+  min-height: 34px !important;
+  padding: 8px 10px !important;
+  font-size: 13px !important;
+}
+
+.content,
+.help,
+.tool-card {
+  border-radius: 24px !important;
+}
+
+/* 列表页：保留无粗边框，但整体更像下厨房的中等卡片 */
+.recipe-grid {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+  gap: 16px !important;
+}
+
+.recipe-card {
+  border-radius: 18px !important;
+}
+
+.card-visual {
+  height: 150px !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  background: #f8efe1 !important;
+  overflow: hidden !important;
+}
+
+.card-visual img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.card-body {
+  padding: 12px 14px 12px !important;
+}
+
+.card-body h3 {
+  font-size: 19px !important;
+  line-height: 1.25 !important;
+  margin: 0 0 5px !important;
+}
+
+.meta-line {
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.tag {
+  font-size: 12px !important;
+  padding: 5px 8px !important;
+}
+
+.card-actions {
+  gap: 8px !important;
+}
+
+.card-action,
+.link-btn {
+  min-height: 38px !important;
+  padding: 9px 13px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+}
+
+/* 详情页：压回中等尺寸，类似菜谱站详情正文宽度 */
+body.detail-mode {
+  background: #fffaf2 !important;
+}
+
+body.detail-mode .detail-page {
+  max-width: 980px !important;
+  margin: 22px auto 48px !important;
+  padding: 0 18px !important;
+}
+
+body.detail-mode .recipe-detail-page {
+  padding: 22px !important;
+  border-radius: 22px !important;
+  box-shadow: 0 10px 28px rgba(98, 63, 22, .10) !important;
+}
+
+.back-btn {
+  margin-bottom: 16px !important;
+  padding: 8px 13px !important;
+  font-size: 14px !important;
+}
+
+body.detail-mode .detail-hero {
+  grid-template-columns: minmax(0, 420px) 1fr !important;
+  gap: 22px !important;
+  align-items: start !important;
+}
+
+body.detail-mode .detail-hero-photo {
+  border-radius: 18px !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+body.detail-mode .detail-hero-photo img {
+  width: 100% !important;
+  height: 315px !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  border-radius: 18px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.detail-mode .detail-hero-info h1 {
+  font-size: clamp(28px, 3vw, 38px) !important;
+  line-height: 1.12 !important;
+  margin: 2px 0 10px !important;
+}
+
+body.detail-mode .detail-summary {
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+body.detail-mode .detail-tags {
+  margin: 10px 0 12px !important;
+}
+
+body.detail-mode .detail-stat-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin: 12px 0 !important;
+}
+
+body.detail-mode .detail-stat-row div {
+  padding: 10px !important;
+  border-radius: 14px !important;
+}
+
+body.detail-mode .detail-stat-row strong {
+  font-size: 16px !important;
+}
+
+body.detail-mode .detail-stat-row span {
+  font-size: 12px !important;
+}
+
+body.detail-mode .detail-main-grid {
+  grid-template-columns: 230px 1fr !important;
+  gap: 22px !important;
+  margin-top: 24px !important;
+}
+
+body.detail-mode .ingredient-panel {
+  padding: 16px !important;
+  border-radius: 18px !important;
+  top: 14px !important;
+}
+
+body.detail-mode .ingredient-panel h2,
+body.detail-mode .steps-panel h2,
+body.detail-mode .photo-gallery-section h2,
+body.detail-mode .related-section h2 {
+  font-size: 21px !important;
+  margin-bottom: 14px !important;
+}
+
+body.detail-mode .ingredient-list li {
+  padding: 9px 0 !important;
+  gap: 8px !important;
+}
+
+body.detail-mode .ingredient-list span,
+body.detail-mode .ingredient-list em {
+  font-size: 13px !important;
+}
+
+body.detail-mode .detail-step-list li {
+  grid-template-columns: 34px 1fr !important;
+  gap: 12px !important;
+  padding-bottom: 22px !important;
+  margin-bottom: 22px !important;
+}
+
+body.detail-mode .step-index {
+  width: 34px !important;
+  height: 34px !important;
+  font-size: 14px !important;
+}
+
+body.detail-mode .step-body p {
+  font-size: 15px !important;
+  line-height: 1.7 !important;
+  margin: 2px 0 10px !important;
+}
+
+body.detail-mode .step-body img {
+  width: 100% !important;
+  max-width: 620px !important;
+  max-height: 420px !important;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  border-radius: 14px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  display: block !important;
+}
+
+/* 不再显示详情页图片汇总 */
+.photo-gallery-section {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .hero-grid,
+  .layout,
+  body.detail-mode .detail-hero,
+  body.detail-mode .detail-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.detail-mode .detail-hero-photo img {
+    height: 300px !important;
+  }
+
+  body.detail-mode .ingredient-panel {
+    position: static !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-inline: 12px !important;
+  }
+
+  .hero-copy {
+    padding: 22px !important;
+  }
+
+  .layout {
+    padding-inline: 12px !important;
+  }
+
+  .recipe-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.detail-mode .detail-page {
+    padding: 0 12px !important;
+  }
+
+  body.detail-mode .recipe-detail-page {
+    padding: 16px !important;
+  }
+
+  body.detail-mode .detail-hero-photo img {
+    height: 240px !important;
+  }
+
+  body.detail-mode .detail-stat-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.detail-mode .step-body img {
+    max-width: 100% !important;
+    max-height: 360px !important;
+  }
+}
+
+
+/* V18：统一页面宽度体系
+   解决 V17 中“外层变窄，但推荐/卡片区域仍然三列突出”的问题。
+   思路：所有主区域使用同一个 1080px 内容宽度；推荐卡片改为自适应两列/三列，不再硬撑。
+*/
+
+:root {
+  --app-width: 1080px;
+}
+
+/* 统一所有大区块宽度 */
+.topbar,
+.hero-grid,
+.quick-strip,
+.layout,
+.help,
+.detail-page {
+  width: min(var(--app-width), calc(100vw - 48px)) !important;
+  max-width: var(--app-width) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* 首页主视觉不再左右撑开 */
+.hero {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.topbar {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* 顶部左右两块保持在统一宽度内 */
+.hero-grid {
+  grid-template-columns: 430px 1fr !important;
+  gap: 18px !important;
+}
+
+/* 右侧今日推荐区不要超出主内容宽度 */
+.recommend-panel,
+.today-panel,
+.hero-panel,
+.daily-card,
+.recommend-card {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 首页推荐小条统一宽度，不突出 */
+.quick-strip {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  padding: 0 !important;
+  margin-top: 18px !important;
+}
+
+.quick-card,
+.quick-item,
+.mini-card {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 主体区：左侧筛选固定，右侧结果吃剩余宽度 */
+.layout {
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  gap: 18px !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.content,
+.results-panel,
+.tool-card,
+.help {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* 结果卡片不再硬三列突出，按容器宽度自适应 */
+.recipe-grid {
+  grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+.recipe-card {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* 卡片图稍微收一点，避免三列过高过满 */
+.card-visual {
+  height: 138px !important;
+}
+
+/* 底部说明区统一宽度 */
+.help {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.feature-grid,
+.explain-grid,
+.info-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+.feature-card,
+.explain-card,
+.info-card {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 详情页也跟随统一宽度，但不影响步骤排版 */
+body.detail-mode .detail-page {
+  width: min(960px, calc(100vw - 48px)) !important;
+  max-width: 960px !important;
+}
+
+/* 中等屏：顶部改为单列，避免硬挤 */
+@media (max-width: 1050px) {
+  :root {
+    --app-width: 920px;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .quick-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .layout {
+    grid-template-columns: 280px minmax(0, 1fr) !important;
+  }
+
+  .recipe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+  }
+}
+
+/* V21：主功能入口移到顶部导航，窄屏自动换行 */
+@media (max-width: 820px) {
+  .topbar {
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+  }
+  .brand {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  .top-actions {
+    flex-shrink: 0 !important;
+  }
+  .top-tabs {
+    order: 3 !important;
+    flex: 1 0 100% !important;
+    justify-content: flex-start !important;
+    padding-bottom: 2px !important;
+  }
+}
+
+/* 窄屏：筛选和结果上下排列 */
+@media (max-width: 820px) {
+  .topbar,
+  .hero-grid,
+  .quick-strip,
+  .layout,
+  .help,
+  .detail-page {
+    width: min(100% - 24px, 680px) !important;
+  }
+
+  .layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .quick-strip {
+    grid-template-columns: 1fr !important;
+  }
+
+  .feature-grid,
+  .explain-grid,
+  .info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .recipe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .recipe-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .card-visual {
+    height: 170px !important;
+  }
+}
+
+
+/* V19：只保留“今日推荐”，改成横向小图菜谱条 */
+.home-recs.today-only-recs {
+  width: min(var(--app-width, 1080px), calc(100vw - 48px)) !important;
+  max-width: var(--app-width, 1080px) !important;
+  margin: 18px auto 0 !important;
+  display: block !important;
+}
+
+.today-only-card {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border-radius: 22px !important;
+  padding: 16px 18px !important;
+}
+
+.today-only-card .rec-head {
+  margin-bottom: 12px !important;
+}
+
+.today-row-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.today-dish-mini {
+  display: grid !important;
+  grid-template-columns: 58px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  gap: 8px 10px !important;
+  align-items: center !important;
+  padding: 9px !important;
+  border-radius: 16px !important;
+  background: var(--surface-soft) !important;
+  min-width: 0 !important;
+}
+
+.today-dish-mini .mini-thumb {
+  grid-row: 1 / 3 !important;
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  background: var(--surface) !important;
+}
+
+.today-dish-mini .mini-thumb-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.today-dish-mini .dish-photo-placeholder {
+  width: 58px !important;
+  height: 58px !important;
+  min-height: 58px !important;
+  border-radius: 12px !important;
+  font-size: 18px !important;
+}
+
+.today-dish-mini .dish-photo-placeholder small {
+  display: none !important;
+}
+
+.today-dish-mini .mini-info {
+  min-width: 0 !important;
+}
+
+.today-dish-mini strong {
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.today-dish-mini small {
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.today-dish-mini .link-btn {
+  grid-column: 2 !important;
+  justify-self: start !important;
+  min-height: 28px !important;
+  padding: 5px 10px !important;
+  font-size: 12px !important;
+  border-radius: 999px !important;
+}
+
+/* 防止旧三列推荐残留样式影响 */
+.home-recs.today-only-recs article {
+  max-width: 100% !important;
+}
+
+@media (max-width: 820px) {
+  .home-recs.today-only-recs {
+    width: min(100% - 24px, 680px) !important;
+  }
+  .today-row-list {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important;
+  }
+}
+
+/* V22：固定全站背景渐变到视口。
+   只修复不同功能页/标签页因内容高度不同导致背景颜色看起来不一致的问题，
+   不调整任何布局、卡片、文字、图片或交互样式。 */
+body {
+  background-color: var(--bg) !important;
+  background-image:
+    radial-gradient(circle at top left, rgba(232, 111, 45, .16), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(47, 155, 123, .13), transparent 30%) !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-size: 100vw 100vh, 100vw 100vh !important;
+  background-attachment: fixed, fixed !important;
+}
+
+
+
+/* V23：非首页标签直接展示核心内容。
+   只隐藏菜谱检索首页专属的主视觉推荐、今日推荐和筛选栏，
+   AI 问菜 / 营养套餐 / 我的收藏不再先显示首页推荐区。 */
+.hero.nav-only {
+  padding-bottom: 16px !important;
+}
+
+.hero.nav-only .topbar {
+  margin-bottom: 0 !important;
+}
+
+.layout.core-only {
+  grid-template-columns: minmax(0, 1fr) !important;
+  padding-top: 0 !important;
+}
+
+.layout.core-only .content {
+  width: 100% !important;
+}
+
+
+/* V24：整体压缩字号、降低圆角和首页首屏高度。
+   目标：不改数据和交互，只让首页首屏能露出筛选栏与菜品列表，视觉更像工具型菜谱站。 */
+:root {
+  --radius: 6px !important;
+  --app-width: 1080px !important;
+  --shadow: 0 6px 18px rgba(98, 63, 22, .08) !important;
+}
+
+body {
+  font-size: 14px !important;
+}
+
+/* 顶部导航压缩 */
+.hero {
+  padding: 10px 0 12px !important;
+}
+.topbar {
+  margin-bottom: 12px !important;
+  gap: 10px !important;
+}
+.brand {
+  gap: 9px !important;
+}
+.brand-mark {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 6px !important;
+  font-size: 18px !important;
+  box-shadow: none !important;
+}
+.brand strong {
+  font-size: 15px !important;
+}
+.brand small {
+  font-size: 11px !important;
+}
+.top-tabs {
+  gap: 7px !important;
+  padding: 2px 0 !important;
+}
+.top-tabs .tab,
+.ghost-btn {
+  min-height: 32px !important;
+  padding: 0 12px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+}
+
+/* 首页主视觉改为紧凑横向区块 */
+.hero-grid {
+  grid-template-columns: 405px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+.hero-copy {
+  min-height: 240px !important;
+  padding: 20px 22px !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow) !important;
+}
+.eyebrow {
+  font-size: 10px !important;
+  letter-spacing: .12em !important;
+}
+.hero h1 {
+  margin: 4px 0 8px !important;
+  font-size: clamp(28px, 3.4vw, 40px) !important;
+  line-height: 1.08 !important;
+}
+.hero-copy > p:not(.eyebrow) {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+.searchbar {
+  margin-top: 13px !important;
+  padding: 4px !important;
+  border-radius: 6px !important;
+}
+.searchbar input {
+  min-height: 34px !important;
+  padding: 7px 10px !important;
+  font-size: 13px !important;
+}
+.searchbar button,
+.pill-btn,
+.inline-input button,
+.package-controls button {
+  min-height: 34px !important;
+  padding: 7px 12px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+}
+.hero-actions {
+  gap: 8px !important;
+  margin-top: 10px !important;
+}
+
+/* 右侧今日推荐轮播压低高度，保留推荐但不挡住筛选结果 */
+.featured-card,
+.carousel-card {
+  min-height: 240px !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow) !important;
+  grid-template-rows: 112px auto !important;
+}
+.carousel-visual,
+.featured-visual {
+  min-height: 112px !important;
+  height: 112px !important;
+}
+.carousel-visual::after {
+  display: none !important;
+}
+.dish-photo,
+.dish-photo-placeholder {
+  width: min(215px, 62%) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+.dish-photo-placeholder span {
+  font-size: 48px !important;
+}
+.carousel-nav {
+  width: 30px !important;
+  height: 30px !important;
+  border-radius: 4px !important;
+  font-size: 25px !important;
+}
+.carousel-nav.prev { left: 14px !important; }
+.carousel-nav.next { right: 14px !important; }
+.featured-body {
+  padding: 12px 18px !important;
+}
+.featured-label {
+  padding: 4px 7px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+}
+.featured-body h2 {
+  margin: 5px 0 !important;
+  font-size: 22px !important;
+  line-height: 1.18 !important;
+}
+.featured-reason {
+  margin: 0 0 6px !important;
+  font-size: 13px !important;
+  line-height: 1.42 !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+}
+.carousel-card .tag-row {
+  margin: 5px 0 !important;
+  gap: 4px !important;
+  max-height: 22px !important;
+  overflow: hidden !important;
+}
+.carousel-bottom {
+  margin-top: 6px !important;
+}
+.dot,
+.dot.active {
+  border-radius: 3px !important;
+}
+
+/* 今日推荐小条继续保留，但更薄 */
+.home-recs.today-only-recs {
+  width: min(var(--app-width, 1080px), calc(100vw - 40px)) !important;
+  margin: 10px auto 0 !important;
+}
+.today-only-card {
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow) !important;
+}
+.today-only-card .rec-head {
+  margin-bottom: 7px !important;
+  font-size: 15px !important;
+}
+.today-row-list {
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr)) !important;
+  gap: 8px !important;
+}
+.today-dish-mini {
+  grid-template-columns: 46px minmax(0, 1fr) !important;
+  gap: 5px 8px !important;
+  padding: 6px !important;
+  border-radius: 6px !important;
+}
+.today-dish-mini .mini-thumb,
+.today-dish-mini .dish-photo-placeholder {
+  width: 46px !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  border-radius: 4px !important;
+}
+.today-dish-mini strong {
+  font-size: 13px !important;
+}
+.today-dish-mini small {
+  font-size: 11px !important;
+}
+.today-dish-mini .link-btn {
+  min-height: 24px !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+}
+
+/* 主体筛选与结果区：更早进入、更扁平 */
+.layout {
+  grid-template-columns: 270px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  padding: 0 0 32px !important;
+}
+.filters,
+.content,
+.tool-card,
+.help {
+  padding: 12px !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow) !important;
+}
+.filter-header,
+.result-toolbar,
+.tabs {
+  gap: 10px !important;
+}
+.filter-header h2,
+.result-toolbar h2,
+.tool-card h2 {
+  font-size: 18px !important;
+}
+.badge,
+.tag,
+.chip,
+.data-overview span,
+.featured-label {
+  border-radius: 4px !important;
+}
+.badge {
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+}
+.filter-section {
+  margin-top: 8px !important;
+  border-radius: 6px !important;
+}
+.section-title {
+  padding: 10px !important;
+  font-size: 13px !important;
+}
+.section-body {
+  padding: 0 10px 10px !important;
+}
+.option-group {
+  margin-top: 10px !important;
+}
+.option-group h3 {
+  margin-bottom: 7px !important;
+  font-size: 13px !important;
+}
+.inline-input,
+.package-controls,
+.range-grid,
+.checkbox-grid,
+.checkbox-grid.dense {
+  gap: 7px !important;
+}
+.inline-input input,
+.package-controls select,
+.select-line select,
+.select-line input,
+.range-grid input {
+  min-height: 34px !important;
+  border-radius: 4px !important;
+  padding: 0 9px !important;
+  font-size: 13px !important;
+}
+.check,
+.checkbox-grid label,
+.checkbox-pill {
+  padding: 6px 8px !important;
+  border-radius: 4px !important;
+  font-size: 12px !important;
+}
+.quick-row,
+.chip-row,
+.active-filters {
+  gap: 6px !important;
+  margin-top: 7px !important;
+}
+.quick-row button,
+.chip,
+.chip button {
+  border-radius: 4px !important;
+}
+.quick-row button {
+  padding: 6px 8px !important;
+  font-size: 12px !important;
+}
+.hint,
+.range-grid label,
+.select-line,
+.package-controls label {
+  font-size: 12px !important;
+}
+
+.tabs {
+  padding-bottom: 6px !important;
+}
+.tab {
+  padding: 8px 11px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+}
+.tab-panel {
+  padding-top: 12px !important;
+}
+.result-toolbar {
+  margin-bottom: 10px !important;
+}
+.result-toolbar p {
+  font-size: 13px !important;
+}
+.recipe-grid {
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)) !important;
+  gap: 10px !important;
+}
+.recipe-card {
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+.recipe-card:hover {
+  transform: translateY(-1px) !important;
+}
+.card-visual {
+  height: 118px !important;
+  border-radius: 0 !important;
+}
+.card-body {
+  padding: 10px 11px 9px !important;
+}
+.card-body h3 {
+  font-size: 16px !important;
+  line-height: 1.22 !important;
+  margin-bottom: 4px !important;
+}
+.meta-line,
+.ingredient-line {
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+}
+.tag-row {
+  gap: 4px !important;
+  margin: 7px 0 !important;
+}
+.tag {
+  padding: 3px 6px !important;
+  font-size: 11px !important;
+}
+.card-actions {
+  padding: 0 11px 11px !important;
+  gap: 6px !important;
+}
+.card-action,
+.link-btn {
+  min-height: 32px !important;
+  padding: 7px 10px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+}
+.empty-state,
+.package-card,
+.mini-item,
+.modal,
+.modal-close,
+.detail-box,
+.steps li,
+.recipe-detail-page,
+.ingredient-panel,
+.detail-hero-photo,
+.detail-hero-photo img,
+.detail-stat-row div,
+.step-body img {
+  border-radius: 6px !important;
+}
+
+/* 窄屏仍保持可读，不让双栏硬挤 */
+@media (max-width: 1050px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .layout {
+    grid-template-columns: 250px minmax(0, 1fr) !important;
+  }
+}
+@media (max-width: 820px) {
+  .topbar,
+  .hero-grid,
+  .home-recs.today-only-recs,
+  .layout,
+  .help,
+  .detail-page {
+    width: min(100% - 24px, 680px) !important;
+  }
+  .layout {
+    grid-template-columns: 1fr !important;
+  }
+  .hero-copy,
+  .carousel-card {
+    min-height: auto !important;
+  }
+}
+@media (max-width: 520px) {
+  .recipe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
+  }
+  .card-visual {
+    height: 112px !important;
+  }
+}
+
+/* V25: 右侧首页推荐只保留菜名，把腾出的空间还给菜品图片 */
+.featured-card,
+.carousel-card {
+  min-height: 240px !important;
+  grid-template-rows: 158px auto !important;
+}
+.carousel-visual,
+.featured-visual {
+  min-height: 158px !important;
+  height: 158px !important;
+}
+.dish-photo,
+.dish-photo-placeholder {
+  width: min(285px, 60%) !important;
+  aspect-ratio: 1.5 / 1 !important;
+}
+.featured-body.simple-featured {
+  min-height: 82px !important;
+  padding: 9px 18px 10px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+.featured-body.simple-featured h2 {
+  margin: 0 !important;
+  font-size: 23px !important;
+  line-height: 1.15 !important;
+}
+.featured-body.simple-featured .carousel-bottom {
+  margin-top: 4px !important;
+}
+.featured-body.simple-featured .card-action {
+  min-height: 30px !important;
+  padding: 6px 10px !important;
+}
+
+/* V26: 去掉“查看/查看做法”入口，卡片本身可点击进入详情 */
+.detail-clickable {
+  cursor: pointer !important;
+}
+.detail-clickable:focus-visible {
+  outline: 2px solid rgba(204, 103, 49, .45) !important;
+  outline-offset: 2px !important;
+}
+.carousel-visual.detail-clickable,
+.featured-body.simple-featured.detail-clickable,
+.today-dish-mini.detail-clickable,
+.recipe-card.detail-clickable,
+.ai-pick.detail-clickable,
+.package-card.detail-clickable,
+.package-dish-row.detail-clickable {
+  cursor: pointer !important;
+}
+.featured-body.simple-featured .carousel-bottom.no-action {
+  justify-content: flex-end !important;
+  align-items: center !important;
+  margin-top: 4px !important;
+}
+.featured-body.simple-featured .card-action,
+.today-dish-mini .link-btn {
+  display: none !important;
+}
+.today-dish-mini {
+  grid-template-columns: 58px minmax(0, 1fr) !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+}
+.today-dish-mini .mini-info {
+  align-self: center !important;
+}
+.recipe-card .card-actions {
+  grid-template-columns: auto !important;
+  justify-content: flex-end !important;
+  padding-top: 0 !important;
+}
+.recipe-card .card-action.secondary {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+}
+.ai-pick.detail-clickable {
+  justify-content: flex-start !important;
+}
+.package-dish-row.detail-clickable {
+  padding: 4px 6px !important;
+  border-radius: 6px !important;
+  list-style-position: inside !important;
+}
+.package-dish-name {
+  color: var(--primary-dark) !important;
+  font-weight: 700 !important;
+}
+
+/* V27: 去掉查看入口后的留白收紧；收藏心移到卡片角落，不再单独占一行 */
+.featured-card,
+.carousel-card {
+  min-height: 236px !important;
+  grid-template-rows: 188px 48px !important;
+}
+.carousel-visual,
+.featured-visual {
+  min-height: 188px !important;
+  height: 188px !important;
+}
+.dish-photo,
+.dish-photo-placeholder {
+  width: min(330px, 68%) !important;
+  aspect-ratio: 1.62 / 1 !important;
+}
+.featured-body.simple-featured {
+  min-height: 48px !important;
+  padding: 7px 18px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.featured-body.simple-featured h2 {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 21px !important;
+  line-height: 1.15 !important;
+}
+.featured-body.simple-featured .carousel-bottom.no-action {
+  margin: 0 !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+}
+.featured-body.simple-featured .carousel-dots {
+  align-items: center !important;
+}
+
+.recipe-card.detail-clickable {
+  position: relative !important;
+  padding-bottom: 0 !important;
+}
+.recipe-card .card-actions {
+  position: absolute !important;
+  top: 7px !important;
+  right: 7px !important;
+  z-index: 3 !important;
+  display: block !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: auto !important;
+}
+.recipe-card .card-action.secondary {
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 6px !important;
+  background: rgba(255,255,255,.86) !important;
+  color: var(--primary-dark) !important;
+  border: 1px solid rgba(255,255,255,.72) !important;
+  box-shadow: 0 4px 12px rgba(80,55,28,.14) !important;
+}
+.recipe-card .card-action.secondary.faved {
+  color: #fff !important;
+  background: #d84646 !important;
+  border-color: rgba(216,70,70,.88) !important;
+}
+.recipe-card .card-body {
+  padding-bottom: 10px !important;
+}
+.today-dish-mini {
+  grid-template-rows: auto !important;
+}
+.today-dish-mini .mini-info small {
+  margin-top: 1px !important;
+}
+
+/* V28: 收藏入口只保留在详情页；详情页风格继续贴近首页的小字号、低圆角 */
+.recipe-card .card-actions {
+  display: none !important;
+}
+.recipe-card.detail-clickable {
+  padding-bottom: 0 !important;
+}
+.recipe-card .card-body {
+  padding-bottom: 10px !important;
+}
+
+body.detail-mode .detail-page {
+  width: min(var(--app-width), calc(100vw - 48px)) !important;
+  max-width: var(--app-width) !important;
+  margin: 12px auto 32px !important;
+  padding: 0 !important;
+}
+body.detail-mode .recipe-detail-page {
+  padding: 14px !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  border: 1px solid var(--line) !important;
+}
+.back-btn {
+  margin-bottom: 10px !important;
+  min-height: 32px !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  box-shadow: none !important;
+}
+body.detail-mode .detail-hero {
+  grid-template-columns: 360px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  margin-bottom: 14px !important;
+}
+body.detail-mode .detail-hero-photo,
+body.detail-mode .detail-hero-photo img {
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+body.detail-mode .detail-hero-photo img {
+  height: 258px !important;
+  object-fit: cover !important;
+}
+body.detail-mode .detail-hero-info {
+  min-width: 0 !important;
+}
+body.detail-mode .detail-hero-info .eyebrow {
+  font-size: 11px !important;
+  letter-spacing: .12em !important;
+  margin-bottom: 6px !important;
+}
+.detail-title-line {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin: 0 0 7px !important;
+}
+body.detail-mode .detail-title-line h1,
+body.detail-mode .detail-hero-info h1 {
+  min-width: 0 !important;
+  margin: 0 !important;
+  font-size: 24px !important;
+  line-height: 1.18 !important;
+  letter-spacing: -.02em !important;
+}
+.detail-fav-btn {
+  flex: 0 0 auto !important;
+  min-height: 32px !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--line) !important;
+  background: #fffaf4 !important;
+  color: var(--primary-dark) !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+}
+.detail-fav-btn:hover {
+  border-color: rgba(204,103,49,.45) !important;
+}
+.detail-fav-btn.faved {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-color: var(--primary) !important;
+}
+body.detail-mode .detail-summary {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  margin: 0 0 8px !important;
+}
+body.detail-mode .detail-tags {
+  margin: 7px 0 9px !important;
+  gap: 4px !important;
+}
+body.detail-mode .detail-tags .tag {
+  padding: 3px 6px !important;
+  font-size: 11px !important;
+}
+body.detail-mode .detail-stat-row {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin: 8px 0 !important;
+}
+body.detail-mode .detail-stat-row div {
+  padding: 8px 9px !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+body.detail-mode .detail-stat-row strong {
+  font-size: 14px !important;
+  line-height: 1.2 !important;
+}
+body.detail-mode .detail-stat-row span,
+body.detail-mode .meta-line {
+  font-size: 12px !important;
+}
+body.detail-mode .detail-main-grid {
+  grid-template-columns: 260px minmax(0, 1fr) !important;
+  gap: 14px !important;
+  margin-top: 14px !important;
+}
+body.detail-mode .ingredient-panel,
+body.detail-mode .steps-panel,
+body.detail-mode .related-section {
+  padding: 14px !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  border: 1px solid var(--line) !important;
+}
+body.detail-mode .ingredient-panel {
+  top: 10px !important;
+}
+body.detail-mode .ingredient-panel h2,
+body.detail-mode .steps-panel h2,
+body.detail-mode .photo-gallery-section h2,
+body.detail-mode .related-section h2 {
+  font-size: 18px !important;
+  line-height: 1.25 !important;
+  margin: 0 0 10px !important;
+}
+body.detail-mode .ingredient-list li {
+  padding: 7px 0 !important;
+  gap: 8px !important;
+}
+body.detail-mode .ingredient-list span,
+body.detail-mode .ingredient-list em {
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+body.detail-mode .detail-step-list {
+  gap: 8px !important;
+}
+body.detail-mode .detail-step-list li {
+  grid-template-columns: 28px 1fr !important;
+  gap: 10px !important;
+  padding: 10px !important;
+  margin: 0 0 10px !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(226, 211, 188, .8) !important;
+}
+body.detail-mode .step-index {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+}
+body.detail-mode .step-body p {
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  margin: 0 0 8px !important;
+}
+body.detail-mode .step-body img {
+  max-width: 520px !important;
+  max-height: 330px !important;
+  border-radius: 6px !important;
+}
+body.detail-mode .related-section {
+  margin-top: 14px !important;
+}
+body.detail-mode .related-grid {
+  gap: 10px !important;
+}
+
+@media (max-width: 1050px) {
+  body.detail-mode .detail-hero,
+  body.detail-mode .detail-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+  body.detail-mode .detail-hero-photo img {
+    height: 320px !important;
+  }
+  body.detail-mode .ingredient-panel {
+    position: static !important;
+  }
+}
+@media (max-width: 620px) {
+  body.detail-mode .detail-page {
+    width: min(100% - 24px, 680px) !important;
+  }
+  body.detail-mode .recipe-detail-page {
+    padding: 12px !important;
+  }
+  .detail-title-line {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  body.detail-mode .detail-title-line h1,
+  body.detail-mode .detail-hero-info h1 {
+    font-size: 21px !important;
+  }
+  body.detail-mode .detail-hero-photo img {
+    height: 230px !important;
+  }
+  body.detail-mode .detail-stat-row {
+    grid-template-columns: 1fr !important;
+  }
+  body.detail-mode .detail-step-list li {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
+/* V33：从 V28 样式回退后，强化“首页推荐只在菜谱检索页出现”。
+   这里不用调整视觉风格，只对首页专属区域做显示/隐藏兜底。 */
+body:not(.home-active) .hero-grid,
+body:not(.home-active) .home-recs.today-only-recs,
+body:not(.home-active) .filters,
+.core-tab-active .hero-grid,
+.core-tab-active .home-recs.today-only-recs,
+.core-tab-active .filters {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+body.core-tab-active .hero.nav-only {
+  padding-bottom: 16px !important;
+}
+
+body.core-tab-active .layout.core-only {
+  grid-template-columns: minmax(0, 1fr) !important;
+  padding-top: 0 !important;
+}
+
+body.core-tab-active .layout.core-only .content {
+  width: 100% !important;
+}
+
+body.home-active .hero-grid,
+body.home-active .home-recs.today-only-recs {
+  visibility: visible !important;
+}
+
+/* V34：首页去掉左侧“今天吃什么”大框；推荐图放大，关键词检索并入下方筛选区。 */
+body.home-active .hero-grid.home-hero-feature {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+}
+
+/* 旧主标题框在 V34 中不再出现，保留兜底，防止缓存结构残留。 */
+body.home-active .hero-copy {
+  display: none !important;
+}
+
+body.home-active .home-hero-feature .featured-card,
+body.home-active .home-hero-feature .carousel-card {
+  width: 100% !important;
+  min-height: 306px !important;
+  grid-template-rows: 250px 56px !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+body.home-active .home-hero-feature .carousel-visual,
+body.home-active .home-hero-feature .featured-visual {
+  min-height: 250px !important;
+  height: 250px !important;
+}
+
+body.home-active .home-hero-feature .dish-photo,
+body.home-active .home-hero-feature .dish-photo-placeholder {
+  width: min(560px, 66%) !important;
+  max-height: 222px !important;
+  aspect-ratio: 16 / 9 !important;
+  border-radius: 6px !important;
+  object-fit: cover !important;
+}
+
+body.home-active .home-hero-feature .dish-photo-placeholder span {
+  font-size: 66px !important;
+}
+
+body.home-active .home-hero-feature .featured-body.simple-featured {
+  min-height: 56px !important;
+  padding: 8px 18px !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+}
+
+body.home-active .home-hero-feature .featured-body.simple-featured h2 {
+  font-size: 22px !important;
+  line-height: 1.15 !important;
+}
+
+body.home-active .home-hero-feature .carousel-nav {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+body.home-active .home-recs.today-only-recs {
+  margin-top: 10px !important;
+}
+
+/* 关键词检索移入筛选栏顶部，和下面条件筛选成为同一个工作区。 */
+.filter-search-panel {
+  padding: 0 0 12px !important;
+  margin: 0 0 10px !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+.filter-search-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 8px !important;
+}
+
+.filter-search-head h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+}
+
+.filter-subhead {
+  margin-top: 0 !important;
+  margin-bottom: 4px !important;
+  padding-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.filter-subhead h2 {
+  font-size: 15px !important;
+  color: var(--muted) !important;
+  font-weight: 800 !important;
+}
+
+.compact-searchbar {
+  margin-top: 0 !important;
+  padding: 4px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 6px !important;
+  border-radius: 6px !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
+}
+
+.compact-searchbar input {
+  min-width: 0 !important;
+  min-height: 34px !important;
+  padding: 7px 8px !important;
+  font-size: 13px !important;
+}
+
+.compact-searchbar button {
+  min-height: 34px !important;
+  padding: 7px 11px !important;
+  white-space: nowrap !important;
+}
+
+.compact-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 6px !important;
+  margin-top: 8px !important;
+}
+
+.compact-actions .pill-btn {
+  width: 100% !important;
+  min-height: 30px !important;
+  padding: 6px 7px !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+/* 避免顶部已移除的搜索区样式继续占高度。 */
+.hero > .searchbar,
+.hero > .hero-actions {
+  display: none !important;
+}
+
+@media (max-width: 1050px) {
+  body.home-active .home-hero-feature .featured-card,
+  body.home-active .home-hero-feature .carousel-card {
+    min-height: 286px !important;
+    grid-template-rows: 232px 54px !important;
+  }
+  body.home-active .home-hero-feature .carousel-visual,
+  body.home-active .home-hero-feature .featured-visual {
+    min-height: 232px !important;
+    height: 232px !important;
+  }
+}
+
+@media (max-width: 820px) {
+  body.home-active .hero-grid.home-hero-feature {
+    width: min(100% - 24px, 680px) !important;
+  }
+  body.home-active .home-hero-feature .featured-card,
+  body.home-active .home-hero-feature .carousel-card {
+    min-height: 254px !important;
+    grid-template-rows: 202px 52px !important;
+  }
+  body.home-active .home-hero-feature .carousel-visual,
+  body.home-active .home-hero-feature .featured-visual {
+    min-height: 202px !important;
+    height: 202px !important;
+  }
+  body.home-active .home-hero-feature .dish-photo,
+  body.home-active .home-hero-feature .dish-photo-placeholder {
+    width: min(420px, 76%) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .compact-searchbar {
+    grid-template-columns: 1fr !important;
+  }
+  .compact-actions {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  body.home-active .home-hero-feature .featured-card,
+  body.home-active .home-hero-feature .carousel-card {
+    min-height: 226px !important;
+    grid-template-rows: 176px 50px !important;
+  }
+  body.home-active .home-hero-feature .carousel-visual,
+  body.home-active .home-hero-feature .featured-visual {
+    min-height: 176px !important;
+    height: 176px !important;
+  }
+}
+
+/* V35：关键词检索不放左侧筛选栏；改成位于“今日推荐”和“检索结果”之间的横向检索条。 */
+body:not(.home-active) .today-only-search,
+body.core-tab-active .today-only-search,
+body.detail-mode .today-only-search {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+.home-search-strip.today-only-search {
+  width: min(var(--app-width, 1080px), calc(100vw - 40px)) !important;
+  max-width: var(--app-width, 1080px) !important;
+  margin: 12px auto 12px !important;
+  padding: 10px 12px !important;
+  box-sizing: border-box !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 8px !important;
+  background: rgba(255, 252, 246, .92) !important;
+  box-shadow: var(--shadow) !important;
+}
+
+:root.dark .home-search-strip.today-only-search {
+  background: rgba(43, 35, 28, .92) !important;
+}
+
+.home-search-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+.home-search-head h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  line-height: 1.2 !important;
+}
+
+.home-search-head p {
+  margin: 2px 0 0 !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  color: var(--muted) !important;
+}
+
+.home-search-controls {
+  display: grid !important;
+  grid-template-columns: minmax(420px, 1fr) auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+.home-search-strip .compact-searchbar {
+  margin: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 4px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 6px !important;
+  border-radius: 6px !important;
+  background: var(--surface) !important;
+  box-shadow: none !important;
+}
+
+.home-search-strip .compact-searchbar input {
+  min-width: 0 !important;
+  min-height: 34px !important;
+  padding: 7px 10px !important;
+  font-size: 13px !important;
+}
+
+.home-search-strip .compact-searchbar button {
+  min-height: 34px !important;
+  padding: 7px 14px !important;
+  white-space: nowrap !important;
+}
+
+.home-search-strip .compact-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, auto) !important;
+  gap: 6px !important;
+  margin: 0 !important;
+  align-items: center !important;
+}
+
+.home-search-strip .compact-actions .pill-btn {
+  width: auto !important;
+  min-height: 34px !important;
+  padding: 7px 10px !important;
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+/* 左侧筛选栏从“按需求筛选”开始，不再出现独立检索框。 */
+.filters .filter-subhead {
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+.filters .filter-subhead h2 {
+  font-size: 16px !important;
+  color: var(--text) !important;
+}
+
+@media (max-width: 1050px) {
+  .home-search-controls {
+    grid-template-columns: 1fr !important;
+  }
+  .home-search-strip .compact-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+  .home-search-strip .compact-actions .pill-btn {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 820px) {
+  .home-search-strip.today-only-search {
+    width: min(100% - 24px, 680px) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-search-head {
+    align-items: flex-start !important;
+  }
+  .home-search-strip .compact-searchbar {
+    grid-template-columns: 1fr !important;
+  }
+  .home-search-strip .compact-actions {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+/* V37：顶部推荐重新排布。
+   左侧保留一个大图推荐菜品，右侧放今日推荐列表；检索栏仍横向位于推荐区和结果区之间。 */
+body.home-active .hero-grid.home-hero-feature.home-recommend-layout {
+  width: min(var(--app-width, 1080px), calc(100vw - 40px)) !important;
+  max-width: var(--app-width, 1080px) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.42fr) minmax(300px, .78fr) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main,
+body.home-active .home-recommend-layout .featured-card,
+body.home-active .home-recommend-layout .carousel-card {
+  min-height: 342px !important;
+  height: 342px !important;
+  grid-template-rows: 278px 64px !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+body.home-active .home-recommend-layout .carousel-visual,
+body.home-active .home-recommend-layout .featured-visual {
+  min-height: 278px !important;
+  height: 278px !important;
+}
+
+body.home-active .home-recommend-layout .dish-photo,
+body.home-active .home-recommend-layout .dish-photo-placeholder {
+  width: min(520px, 82%) !important;
+  height: 238px !important;
+  max-height: 238px !important;
+  object-fit: cover !important;
+  border-radius: 6px !important;
+}
+
+body.home-active .home-recommend-layout .featured-body {
+  min-height: 64px !important;
+  padding: 8px 16px 9px !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  grid-template-rows: auto auto !important;
+  gap: 3px 12px !important;
+  align-items: center !important;
+}
+
+body.home-active .home-recommend-layout .featured-body .featured-label {
+  grid-column: 1 / 2 !important;
+  width: fit-content !important;
+  padding: 2px 6px !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+body.home-active .home-recommend-layout .featured-body h2 {
+  grid-column: 1 / 2 !important;
+  margin: 0 !important;
+  font-size: 20px !important;
+  line-height: 1.16 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+body.home-active .home-recommend-layout .carousel-bottom {
+  grid-column: 2 / 3 !important;
+  grid-row: 1 / 3 !important;
+  margin: 0 !important;
+  align-self: center !important;
+}
+
+body.home-active .home-recommend-layout .hero-today-recs {
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  display: block !important;
+  height: 342px !important;
+}
+
+body.home-active .home-recommend-layout .today-only-card {
+  height: 100% !important;
+  padding: 12px !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+body.home-active .home-recommend-layout .today-only-card .rec-head {
+  flex: 0 0 auto !important;
+  margin-bottom: 9px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+body.home-active .home-recommend-layout .today-row-list {
+  flex: 1 1 auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 7px !important;
+  align-content: stretch !important;
+  min-height: 0 !important;
+}
+
+body.home-active .home-recommend-layout .today-dish-mini {
+  min-height: 48px !important;
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  padding: 5px 6px !important;
+  gap: 5px 8px !important;
+  border-radius: 6px !important;
+}
+
+body.home-active .home-recommend-layout .today-dish-mini .mini-thumb,
+body.home-active .home-recommend-layout .today-dish-mini .dish-photo-placeholder {
+  width: 48px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  border-radius: 4px !important;
+}
+
+body.home-active .home-recommend-layout .today-dish-mini strong {
+  font-size: 13px !important;
+}
+
+body.home-active .home-recommend-layout .today-dish-mini small {
+  font-size: 11px !important;
+}
+
+/* 其他页面继续隐藏首页推荐；详情页也不保留顶部推荐。 */
+body:not(.home-active) .home-recommend-layout,
+body.core-tab-active .home-recommend-layout,
+body.detail-mode .home-recommend-layout {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+@media (max-width: 900px) {
+  body.home-active .hero-grid.home-hero-feature.home-recommend-layout {
+    width: min(100% - 24px, 680px) !important;
+    grid-template-columns: 1fr !important;
+  }
+  body.home-active .home-recommend-layout .hero-feature-main,
+  body.home-active .home-recommend-layout .featured-card,
+  body.home-active .home-recommend-layout .carousel-card {
+    height: 304px !important;
+    min-height: 304px !important;
+    grid-template-rows: 242px 62px !important;
+  }
+  body.home-active .home-recommend-layout .carousel-visual,
+  body.home-active .home-recommend-layout .featured-visual {
+    height: 242px !important;
+    min-height: 242px !important;
+  }
+  body.home-active .home-recommend-layout .dish-photo,
+  body.home-active .home-recommend-layout .dish-photo-placeholder {
+    height: 210px !important;
+    max-height: 210px !important;
+  }
+  body.home-active .home-recommend-layout .hero-today-recs {
+    height: auto !important;
+  }
+  body.home-active .home-recommend-layout .today-row-list {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  body.home-active .home-recommend-layout .hero-feature-main,
+  body.home-active .home-recommend-layout .featured-card,
+  body.home-active .home-recommend-layout .carousel-card {
+    height: 254px !important;
+    min-height: 254px !important;
+    grid-template-rows: 198px 56px !important;
+  }
+  body.home-active .home-recommend-layout .carousel-visual,
+  body.home-active .home-recommend-layout .featured-visual {
+    height: 198px !important;
+    min-height: 198px !important;
+  }
+  body.home-active .home-recommend-layout .dish-photo,
+  body.home-active .home-recommend-layout .dish-photo-placeholder {
+    height: 170px !important;
+    max-height: 170px !important;
+  }
+}
+
+
+/* V38：删掉首页左侧推荐菜品后面的深色背景/外框；底部系统说明区已从 HTML 移除。 */
+body.home-active .home-recommend-layout .hero-feature-main,
+body.home-active .home-recommend-layout .hero-feature-main.featured-card,
+body.home-active .home-recommend-layout .hero-feature-main.carousel-card {
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  outline: 0 !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main .carousel-visual,
+body.home-active .home-recommend-layout .hero-feature-main .featured-visual {
+  background: transparent !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main .carousel-visual::after,
+body.home-active .home-recommend-layout .hero-feature-main .featured-visual::after {
+  display: none !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main .dish-photo,
+body.home-active .home-recommend-layout .hero-feature-main .dish-photo-placeholder {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main .featured-body {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#help,
+.help {
+  display: none !important;
+}
+
+
+/* V40：左上推荐图微放大，同时限制实际显示尺寸，避免图片被过度拉伸后发虚。 */
+body.home-active .home-recommend-layout .hero-feature-main,
+body.home-active .home-recommend-layout .hero-feature-main.featured-card,
+body.home-active .home-recommend-layout .hero-feature-main.carousel-card {
+  height: 360px !important;
+  min-height: 360px !important;
+  grid-template-rows: 300px 60px !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main .carousel-visual,
+body.home-active .home-recommend-layout .hero-feature-main .featured-visual {
+  height: 300px !important;
+  min-height: 300px !important;
+  place-items: center !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main .dish-photo.hero-dish-photo,
+body.home-active .home-recommend-layout .hero-feature-main .dish-photo-placeholder.hero-dish-photo {
+  width: min(640px, 96%) !important;
+  height: 282px !important;
+  max-width: 640px !important;
+  max-height: 282px !important;
+  aspect-ratio: auto !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  image-rendering: auto !important;
+  transform: none !important;
+  filter: none !important;
+  will-change: auto !important;
+}
+
+body.home-active .home-recommend-layout .hero-feature-main .featured-body {
+  min-height: 60px !important;
+  padding-top: 7px !important;
+  padding-bottom: 8px !important;
+}
+
+@media (max-width: 900px) {
+  body.home-active .home-recommend-layout .hero-feature-main,
+  body.home-active .home-recommend-layout .hero-feature-main.featured-card,
+  body.home-active .home-recommend-layout .hero-feature-main.carousel-card {
+    height: 330px !important;
+    min-height: 330px !important;
+    grid-template-rows: 270px 60px !important;
+  }
+  body.home-active .home-recommend-layout .hero-feature-main .carousel-visual,
+  body.home-active .home-recommend-layout .hero-feature-main .featured-visual {
+    height: 270px !important;
+    min-height: 270px !important;
+  }
+  body.home-active .home-recommend-layout .hero-feature-main .dish-photo.hero-dish-photo,
+  body.home-active .home-recommend-layout .hero-feature-main .dish-photo-placeholder.hero-dish-photo {
+    width: min(640px, 96%) !important;
+    height: 252px !important;
+    max-height: 252px !important;
+  }
+}
+
+@media (max-width: 520px) {
+  body.home-active .home-recommend-layout .hero-feature-main,
+  body.home-active .home-recommend-layout .hero-feature-main.featured-card,
+  body.home-active .home-recommend-layout .hero-feature-main.carousel-card {
+    height: 286px !important;
+    min-height: 286px !important;
+    grid-template-rows: 232px 54px !important;
+  }
+  body.home-active .home-recommend-layout .hero-feature-main .carousel-visual,
+  body.home-active .home-recommend-layout .hero-feature-main .featured-visual {
+    height: 232px !important;
+    min-height: 232px !important;
+  }
+  body.home-active .home-recommend-layout .hero-feature-main .dish-photo.hero-dish-photo,
+  body.home-active .home-recommend-layout .hero-feature-main .dish-photo-placeholder.hero-dish-photo {
+    width: min(640px, 96%) !important;
+    height: 214px !important;
+    max-height: 214px !important;
+  }
+}
+
+/* V41: 详情页营养估算块，保持 V28/V40 的克制视觉 */
+.nutrition-note {
+  margin: 10px 0 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.nutrition-note strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.nutrition-note span,
+.nutrition-note small {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.ai-related-title {
+  margin: 14px 0 8px;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--text);
+}
+
+
+/* V45: 推荐/套餐候补区图文排版，减少纯文字长卡和空白 */
+.ai-picks-visual {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px !important;
+}
+.ai-pick-visual {
+  display: grid !important;
+  grid-template-columns: 86px minmax(0, 1fr);
+  align-items: center;
+  min-height: 92px;
+  padding: 8px !important;
+  border: 1px solid var(--line);
+  background: var(--surface) !important;
+  border-radius: 8px !important;
+}
+.ai-pick-thumb,
+.package-alt-thumb {
+  overflow: hidden;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+.ai-pick-thumb {
+  width: 86px;
+  height: 76px;
+  border-radius: 6px;
+}
+.ai-pick-img,
+.package-alt-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.ai-pick-copy {
+  min-width: 0;
+}
+.ai-pick-copy strong,
+.package-alt-copy h4 {
+  display: block;
+  margin: 0 0 4px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.ai-pick-copy .meta-line,
+.package-alt-copy .meta-line {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.55;
+}
+.package-alternatives {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  background: var(--surface-soft);
+  border-radius: 10px;
+}
+.package-alt-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+.package-alt-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.package-alt-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.package-alt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.package-alt-card {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.package-alt-thumb {
+  width: 78px;
+  height: 68px;
+  border-radius: 6px;
+}
+.package-alt-copy {
+  min-width: 0;
+}
+.package-alt-copy h4 {
+  font-size: 13px;
+}
+.compact-tags {
+  gap: 4px !important;
+  margin-top: 5px;
+}
+.compact-tags .tag {
+  font-size: 11px !important;
+  padding: 2px 5px !important;
+}
+.package-card + .package-alternatives {
+  align-self: start;
+}
+@media (max-width: 900px) {
+  .ai-picks-visual,
+  .package-alt-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* V47: 修复套餐候补菜品排版。主套餐和候补区上下排列，避免候补卡被挤成很长一列。 */
+#packageResult.package-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+  align-items: start !important;
+}
+
+#packageResult .package-card,
+#packageResult .package-alternatives {
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#packageResult .package-alternatives {
+  margin-top: 0 !important;
+  padding: 14px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface-soft) !important;
+}
+
+#packageResult .package-alt-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: baseline !important;
+  gap: 12px !important;
+  margin-bottom: 10px !important;
+}
+
+#packageResult .package-alt-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+#packageResult .package-alt-card {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 120px auto !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 8px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+  overflow: hidden !important;
+}
+
+#packageResult .package-alt-thumb {
+  width: 100% !important;
+  height: 120px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface-soft) !important;
+}
+
+#packageResult .package-alt-img {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+}
+
+#packageResult .package-alt-copy {
+  min-width: 0 !important;
+  display: block !important;
+}
+
+#packageResult .package-alt-copy h4 {
+  margin: 0 0 4px !important;
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#packageResult .package-alt-copy .meta-line {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+#packageResult .compact-tags {
+  margin-top: 6px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+}
+
+#packageResult .compact-tags .tag {
+  font-size: 11px !important;
+  padding: 2px 5px !important;
+  border-radius: 4px !important;
+}
+
+/* V47: AI 问菜相关菜品也改成稳定的三列图文卡，不让文字挤压成竖排。 */
+.ai-picks.ai-picks-visual {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+.ai-picks.ai-picks-visual .ai-pick-visual {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: 116px auto !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  padding: 8px !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--line) !important;
+  background: var(--surface) !important;
+}
+
+.ai-picks.ai-picks-visual .ai-pick-thumb {
+  width: 100% !important;
+  height: 116px !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+}
+
+.ai-picks.ai-picks-visual .ai-pick-img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.ai-picks.ai-picks-visual .ai-pick-copy {
+  min-width: 0 !important;
+}
+
+.ai-picks.ai-picks-visual .ai-pick-copy strong {
+  display: block !important;
+  margin-bottom: 4px !important;
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.ai-picks.ai-picks-visual .ai-pick-copy .meta-line {
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+@media (max-width: 980px) {
+  #packageResult .package-alt-grid,
+  .ai-picks.ai-picks-visual {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  #packageResult .package-alt-grid,
+  .ai-picks.ai-picks-visual {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 菜谱上传 */
+.upload-card {
+  display: grid;
+  gap: 18px;
+}
+.upload-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.upload-head h2 { margin-bottom: 6px; }
+.upload-head p { color: var(--muted); line-height: 1.7; }
+.ugc-form {
+  display: grid;
+  gap: 16px;
+}
+.form-grid.two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.ugc-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.ugc-form input,
+.ugc-form textarea,
+.ugc-form select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  font: inherit;
+  font-weight: 500;
+}
+.ugc-form textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.7;
+}
+.ugc-form input:focus,
+.ugc-form textarea:focus,
+.ugc-form select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(232, 111, 45, .12);
+}
+.upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.upload-actions button[type="submit"] {
+  padding: 12px 18px;
+  border-radius: 15px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 10px 24px rgba(232, 111, 45, .24);
+}
+.upload-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .64;
+}
+.upload-result {
+  border-radius: 18px;
+  padding: 14px 16px;
+  line-height: 1.7;
+}
+.success-state {
+  border: 1px solid rgba(47, 155, 123, .28);
+  background: rgba(47, 155, 123, .10);
+  color: var(--accent);
+}
+.error-state {
+  border: 1px solid rgba(232, 111, 45, .32);
+  background: rgba(232, 111, 45, .10);
+  color: var(--primary-dark);
+}
+@media (max-width: 760px) {
+  .form-grid.two-col { grid-template-columns: 1fr; }
+  .upload-head { flex-direction: column; }
+}
+
+.select-shell {
+  position: relative;
+  display: block;
+}
+.select-shell::after {
+  content: "⌄";
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-56%);
+  color: var(--primary);
+  pointer-events: none;
+  font-weight: 900;
+}
+.ugc-form select {
+  appearance: none;
+  cursor: pointer;
+  padding-right: 42px;
+  background: linear-gradient(180deg, rgba(255,255,255,.88), rgba(255,247,241,.88));
+}
+.dark .ugc-form select {
+  background: linear-gradient(180deg, rgba(31,33,37,.92), rgba(37,32,29,.92));
+}
+.step-upload-block {
+  display: grid;
+  gap: 12px;
+}
+.step-upload-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-end;
+}
+.step-upload-title label {
+  color: var(--muted);
+  font-weight: 800;
+}
+.step-upload-title p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.step-upload-list {
+  display: grid;
+  gap: 12px;
+}
+.step-upload-item {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 32px;
+  gap: 12px;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 12px;
+  background: rgba(255, 248, 242, .66);
+}
+.dark .step-upload-item {
+  background: rgba(255, 255, 255, .04);
+}
+.step-upload-index {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  font-weight: 900;
+}
+.step-upload-main {
+  display: grid;
+  gap: 10px;
+}
+.step-upload-main textarea {
+  min-height: 86px;
+}
+.step-image-picker {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px 12px;
+  border: 1px dashed rgba(232,111,45,.38);
+  border-radius: 16px;
+  padding: 10px 12px;
+  background: rgba(232,111,45,.06);
+}
+.step-image-picker span {
+  color: var(--text);
+  font-weight: 800;
+}
+.step-image-picker input {
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+}
+.step-image-picker em {
+  grid-column: 1 / -1;
+  color: var(--muted);
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+}
+.step-remove-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: rgba(232,111,45,.10);
+  color: var(--primary-dark);
+  font-size: 18px;
+  line-height: 1;
+}
+.step-add-btn {
+  justify-self: start;
+}
+@media (max-width: 760px) {
+  .step-upload-title { align-items: flex-start; flex-direction: column; }
+  .step-upload-item { grid-template-columns: 32px minmax(0, 1fr); }
+  .step-remove-btn { grid-column: 2; justify-self: end; }
+}
+
+/* 社区讨论 */
+body.detail-mode .comments-section {
+  margin-top: 26px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255,255,255,.72);
+  box-shadow: 0 12px 32px rgba(98, 63, 22, .08);
+}
+
+:root.dark body.detail-mode .comments-section,
+.dark body.detail-mode .comments-section {
+  background: rgba(255,255,255,.04);
+}
+
+body.detail-mode .comments-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+body.detail-mode .comments-head h2 {
+  margin: 0 0 6px;
+  font-size: 21px;
+}
+
+body.detail-mode .comments-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.comment-form {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+
+.comment-form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  gap: 10px;
+}
+
+.comment-form input,
+.comment-form select,
+.comment-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 11px 13px;
+  outline: none;
+}
+
+.comment-form select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
+}
+
+.comment-form textarea {
+  resize: vertical;
+  min-height: 92px;
+}
+
+.comment-form input:focus,
+.comment-form select:focus,
+.comment-form textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(232, 111, 45, .12);
+}
+
+.comment-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.comment-form-result {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.comment-form button {
+  padding: 10px 18px;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  box-shadow: 0 10px 22px rgba(232,111,45,.18);
+}
+
+.comment-form button:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+}
+
+.comments-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.comment-card {
+  padding: 15px 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.comment-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.comment-card-head strong {
+  font-size: 15px;
+}
+
+.comment-card-head span,
+.comment-empty {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.comment-rating-line {
+  min-height: 18px;
+}
+
+.comment-stars {
+  color: var(--primary);
+  letter-spacing: 2px;
+  font-size: 13px;
+}
+
+.comment-card p {
+  margin: 6px 0 0;
+  line-height: 1.75;
+  font-size: 14px;
+}
+
+.comment-empty {
+  padding: 18px;
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  background: rgba(255,255,255,.45);
+}
+
+.comment-empty.error-state {
+  color: #b54708;
+}
+
+@media (max-width: 720px) {
+  .comment-form-row {
+    grid-template-columns: 1fr;
+  }
+  .comment-form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .comment-form button {
+    width: 100%;
+  }
+}
+
+/* V52 评论图片上传 */
+.comment-image-picker {
+  display: grid;
+  gap: 8px;
+  border: 1px dashed rgba(232,111,45,.38);
+  border-radius: 16px;
+  padding: 11px 13px;
+  background: rgba(232,111,45,.06);
+}
+.comment-image-picker span {
+  font-weight: 900;
+  color: var(--text);
+}
+.comment-image-picker input {
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+}
+.comment-image-picker em {
+  color: var(--muted);
+  font-style: normal;
+  font-size: 12px;
+}
+.comment-image-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+.comment-image-link {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  aspect-ratio: 1 / 1;
+}
+.comment-image-link img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .18s ease;
+}
+.comment-image-link:hover img {
+  transform: scale(1.04);
+}
+@media (max-width: 720px) {
+  .comment-image-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

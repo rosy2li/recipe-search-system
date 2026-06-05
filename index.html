@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>食光菜谱</title>
+  <link rel="stylesheet" href="src/styles.v53.css" />
+</head>
+<body class="home-active">
+  <header class="hero">
+    <nav class="topbar">
+      <div class="brand">
+        <span class="brand-mark">🍳</span>
+        <div>
+          <strong>食光菜谱</strong>
+          
+        </div>
+      </div>
+      <div class="top-tabs" aria-label="主功能导航">
+        <button class="tab active" data-tab="recipes">菜谱检索</button>
+        <button class="tab" data-tab="ai">AI 问菜</button>
+        <button class="tab" data-tab="packages">营养套餐</button>
+        <button class="tab" data-tab="favorites">我的收藏</button>
+        <button class="tab" data-tab="upload">上传菜谱</button>
+      </div>
+      <div class="top-actions">
+        <button id="themeToggle" class="ghost-btn" title="切换明暗主题">🌙</button>
+      </div>
+    </nav>
+
+    <section class="hero-grid home-hero-feature home-recommend-layout">
+      <aside id="heroRecommendation" class="featured-card carousel-card hero-feature-main" aria-label="推荐菜品轮播">
+        <div class="featured-skeleton">正在生成推荐菜品...</div>
+      </aside>
+
+      <section class="home-recs today-only-recs hero-today-recs" aria-label="今日推荐">
+        <article class="today-only-card">
+          <div class="rec-head">
+            <span>今日推荐</span>
+            <button class="link-btn" data-quick-scene="晚餐">查看更多</button>
+          </div>
+          <div id="todayRecs" class="mini-rec-list today-row-list"></div>
+        </article>
+      </section>
+    </section>
+  </header>
+
+
+  <section class="home-search-strip today-only-search" aria-label="关键词检索">
+    <div class="home-search-head">
+      <div>
+        <h2>菜谱检索</h2>
+        <p>可以输入菜名、食材，也支持“清淡晚餐、十分钟、xihongshi、番茄炒dan”这类自然描述。</p>
+      </div>
+      <span id="activeCount" class="badge">0 项</span>
+    </div>
+    <div class="home-search-controls">
+      <div class="searchbar compact-searchbar">
+        <input id="keywordInput" type="search" placeholder="搜菜名/食材/需求，例如：清淡晚餐十分钟、xihongshi、番茄炒dan" autocomplete="off" />
+        <button id="searchBtn">搜索</button>
+      </div>
+      <div class="hero-actions compact-actions">
+        <button id="clearFiltersBtn" class="pill-btn secondary">清空筛选</button>
+        <button id="exportBtn" class="pill-btn secondary">导出结果</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="layout">
+    <aside class="filters" aria-label="检索筛选条件">
+      <div class="filter-header filter-subhead">
+        <h2>按需求筛选</h2>
+      </div>
+
+      <section class="filter-section">
+        <button class="section-title" data-collapse="ingredientPanel">按食材找 <span>+</span></button>
+        <div id="ingredientPanel" class="section-body">
+          <div class="inline-input">
+            <input id="ingredientInput" list="ingredientList" placeholder="输入食材后添加" />
+            <button id="addIngredientBtn">添加</button>
+            <datalist id="ingredientList"></datalist>
+          </div>
+          <div id="selectedIngredients" class="chip-row empty">尚未选择食材</div>
+          <p class="hint">多食材默认同时包含所有已选食材，适合“冰箱剩菜能做什么”的场景。</p>
+        </div>
+      </section>
+
+      <section class="filter-section">
+        <button class="section-title" data-collapse="basicPanel">按口味和做法找 <span>+</span></button>
+        <div id="basicPanel" class="section-body">
+          <label class="select-line">排序方式
+            <select id="sortSelect">
+              <option value="score">综合相关度</option>
+              <option value="calorieAsc">热量从低到高</option>
+              <option value="timeAsc">用时从短到长</option>
+              <option value="nameAsc">菜名 A-Z</option>
+            </select>
+          </label>
+          <div class="option-group">
+            <h3>口味</h3>
+            <div id="tasteOptions" class="checkbox-grid"></div>
+          </div>
+          <div class="option-group">
+            <h3>烹饪方式</h3>
+            <div id="methodOptions" class="checkbox-grid"></div>
+          </div>
+          <div class="option-group">
+            <h3>难易程度</h3>
+            <div id="difficultyOptions" class="checkbox-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="filter-section">
+        <button class="section-title" data-collapse="healthPanel">按健康和忌口找 <span>+</span></button>
+        <div id="healthPanel" class="section-body">
+          <div class="range-grid">
+            <label>最低每份热量
+              <input id="minCalories" type="number" min="0" placeholder="0" />
+            </label>
+            <label>最高每份热量
+              <input id="maxCalories" type="number" min="0" placeholder="150" />
+            </label>
+          </div>
+          <div class="quick-row">
+            <button data-calorie-max="80">超低卡</button>
+            <button data-calorie-max="150">≤150 千卡</button>
+            <button data-calorie-max="250">≤250 千卡</button>
+          </div>
+          <div class="option-group">
+            <h3>热量等级</h3>
+            <div id="calorieLevelOptions" class="checkbox-grid"></div>
+          </div>
+          <div class="option-group">
+            <h3>三高适配</h3>
+            <label class="check"><input type="checkbox" data-condition="高血压" /> 高血压/降压</label>
+            <label class="check"><input type="checkbox" data-condition="高血糖" /> 高血糖/控糖</label>
+            <label class="check"><input type="checkbox" data-condition="高血脂" /> 高血脂/低脂</label>
+          </div>
+          <div class="option-group">
+            <h3>健康主题</h3>
+            <div id="healthTagOptions" class="checkbox-grid dense"></div>
+          </div>
+          <div class="option-group">
+            <h3>过敏源筛查</h3>
+            <div id="allergenOptions" class="checkbox-grid"></div>
+          </div>
+          <div class="option-group">
+            <h3>调味料 / 忌口</h3>
+            <div class="inline-input">
+              <input id="seasoningInput" list="seasoningList" placeholder="例如：辣椒、大蒜、花椒" />
+              <button id="addSeasoningBtn">排除</button>
+              <datalist id="seasoningList"></datalist>
+            </div>
+            <div id="excludedSeasonings" class="chip-row empty">尚未设置忌口</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="filter-section">
+        <button class="section-title" data-collapse="scenePanel">按时间、季节和场景找 <span>+</span></button>
+        <div id="scenePanel" class="section-body">
+          <div class="option-group">
+            <h3>烹饪时长</h3>
+            <div class="quick-row">
+              <button data-time-max="5">5分钟</button>
+              <button data-time-max="15">15分钟</button>
+              <button data-time-max="30">30分钟</button>
+              <button data-time-max="60">60分钟</button>
+            </div>
+            <label class="select-line">自定义最长时长
+              <input id="maxMinutes" type="number" min="1" placeholder="如 20" />
+            </label>
+          </div>
+          <div class="option-group">
+            <h3>用餐场景</h3>
+            <div id="sceneOptions" class="checkbox-grid dense"></div>
+          </div>
+          <div class="option-group">
+            <h3>时令季节</h3>
+            <div id="seasonOptions" class="checkbox-grid"></div>
+          </div>
+          <div class="option-group">
+            <h3>节日</h3>
+            <div id="festivalOptions" class="checkbox-grid dense"></div>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="content">
+      <section id="recipesTab" class="tab-panel active">
+        <div class="result-toolbar">
+          <div>
+            <h2>检索结果</h2>
+            <p id="resultSummary">正在加载...</p>
+          </div>
+          <div id="activeFilters" class="active-filters"></div>
+        </div>
+        <div id="recipeGrid" class="recipe-grid"></div>
+      </section>
+
+      <section id="aiTab" class="tab-panel">
+        <div class="tool-card ai-card">
+          <h2>AI 问菜：真实模型推荐</h2>
+          <p>已接入智谱 GLM 接口：先从本地菜谱库召回候选菜，再由模型根据你的需求生成推荐解释；不会编造库外菜谱。未配置 API Key 或网络不可用时会自动降级为本地规则推荐。</p>
+          <div class="ai-form">
+            <textarea id="aiQuestion" rows="4" placeholder="例如：我想吃清淡一点的晚餐，最好十分钟左右能做完"></textarea>
+            <button id="aiAskBtn">生成推荐</button>
+          </div>
+          <div class="quick-row ai-samples">
+            <button data-ai-sample="我最近想减脂，家里有鸡胸肉和黄瓜，晚餐适合吃什么？">减脂晚餐</button>
+            <button data-ai-sample="老人高血压，想吃清淡一点的菜，有什么推荐？">老人清淡</button>
+            <button data-ai-sample="今天下班只有15分钟，想做快手菜">15分钟快手</button>
+          </div>
+          <div id="aiResult" class="ai-result empty-state">输入问题后，系统会先召回本地菜谱，再调用 GLM 生成推荐理由。</div>
+        </div>
+      </section>
+
+      <section id="packagesTab" class="tab-panel">
+        <div class="tool-card">
+          <h2>营养套餐搭配</h2>
+          <p>采用“场景预设 + 规则推荐”组合多道菜。热量展示为参考指标，仅用于排序与比较，不代表实际摄入总热量。</p>
+          <div class="package-controls">
+            <label>选择套餐场景
+              <select id="packagePreset">
+                <option value="office">上班族便当</option>
+                <option value="fatloss">减脂套餐</option>
+                <option value="family">家庭正餐</option>
+                <option value="period">生理期滋补</option>
+                <option value="breakfast">早餐套餐</option>
+                <option value="seasonal">时令尝鲜</option>
+              </select>
+            </label>
+            <button id="generatePackageBtn">生成套餐</button>
+          </div>
+          <div id="packageResult" class="package-grid"></div>
+        </div>
+      </section>
+
+      <section id="favoritesTab" class="tab-panel">
+        <div class="result-toolbar">
+          <div>
+            <h2>我的收藏</h2>
+            <p>收藏会保存在当前浏览器本地。</p>
+          </div>
+        </div>
+        <div id="favoriteGrid" class="recipe-grid"></div>
+      </section>
+
+      <section id="uploadTab" class="tab-panel">
+        <div class="tool-card upload-card">
+          <div class="upload-head">
+            <div>
+              <h2>上传菜谱</h2>
+              <p>把自己的菜谱保存到系统中，提交后会立即进入检索、详情页、AI 候选和套餐推荐。带 <b>*</b> 的项目为必填。</p>
+            </div>
+          </div>
+          <form id="ugcRecipeForm" class="ugc-form">
+            <div class="form-grid two-col">
+              <label>菜名 *
+                <input id="ugcName" name="recipeName" maxlength="80" placeholder="例如：番茄鸡蛋拌饭" required />
+              </label>
+              <label>上传者昵称
+                <input id="ugcAuthor" name="author" maxlength="40" placeholder="例如：小王的厨房" />
+              </label>
+              <label>分类
+                <span class="select-shell"><select id="ugcCategory" name="category"><option value="">请选择分类</option></select></span>
+              </label>
+              <label>口味
+                <span class="select-shell"><select id="ugcTaste" name="taste"><option value="">请选择口味</option></select></span>
+              </label>
+              <label>做法
+                <span class="select-shell"><select id="ugcMethod" name="method"><option value="">请选择做法</option></select></span>
+              </label>
+              <label>难度
+                <span class="select-shell"><select id="ugcDifficulty" name="difficulty"><option value="">请选择难度</option></select></span>
+              </label>
+              <label>制作分钟数
+                <input id="ugcMinutes" name="minutes" type="number" min="1" max="999" placeholder="例如：15" />
+              </label>
+              <label>每 100g 热量估算
+                <input id="ugcCalories" name="caloriesValue" type="number" min="0" max="2000" placeholder="例如：120" />
+              </label>
+            </div>
+
+            <div class="form-grid two-col">
+              <label>热量等级
+                <span class="select-shell"><select id="ugcCalorieLevel" name="calorieLevel"><option value="">请选择热量等级</option></select></span>
+              </label>
+              <label>健康标签
+                <input id="ugcHealthTags" name="healthTags" placeholder="用顿号或逗号分隔，例如：低脂、高蛋白" />
+              </label>
+              <label>适合场景
+                <input id="ugcScenes" name="scenes" placeholder="例如：晚餐、减脂、便当" />
+              </label>
+              <label>适合季节
+                <input id="ugcSeasons" name="seasons" placeholder="例如：春、夏、四季通用" />
+              </label>
+              <label>适合节日
+                <input id="ugcFestivals" name="festivals" placeholder="可选，例如：春节、中秋" />
+              </label>
+              <label>封面图
+                <input id="ugcCover" name="cover" type="file" accept="image/png,image/jpeg,image/webp,image/gif" />
+              </label>
+            </div>
+
+            <label>食材 *
+              <textarea id="ugcIngredients" name="ingredients" rows="5" placeholder="一行一个，格式：食材 | 用量 | 角色&#10;例如：番茄 | 2个 | 主料&#10;鸡蛋 | 2个 | 主料&#10;盐 | 少许 | 调味料" required></textarea>
+            </label>
+            <div class="step-upload-block">
+              <div class="step-upload-title">
+                <label>步骤 *</label>
+                <p>建议一个步骤对应一张照片，便于详情页按步骤展示。</p>
+              </div>
+              <div id="ugcStepList" class="step-upload-list"></div>
+              <button id="ugcAddStepBtn" type="button" class="pill-btn secondary step-add-btn">+ 添加步骤</button>
+            </div>
+            <div class="upload-actions">
+              <button id="ugcSubmitBtn" type="submit">提交菜谱</button>
+              <button id="ugcResetBtn" type="button" class="pill-btn secondary">清空表单</button>
+            </div>
+            <div id="ugcUploadResult" class="upload-result empty-state">填写菜谱后提交，系统会保存到菜谱库中。</div>
+          </form>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <section id="detailPage" class="detail-page" hidden aria-label="菜谱详情页">
+    <div id="detailContent"></div>
+  </section>
+
+  <div id="modalBackdrop" class="modal-backdrop" hidden>
+    <article class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="modalClose" class="modal-close" aria-label="关闭">×</button>
+      <div id="modalContent"></div>
+    </article>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="src/app.v53.js"></script>
+</body>
+</html>
