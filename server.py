@@ -1111,13 +1111,25 @@ class Handler(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     load_dotenv()
-    url = f"http://127.0.0.1:{PORT}"
-    print(f"食光菜谱启动：{url}")
+
+    # V54 Render 部署适配：
+    # - 本地访问页面仍然使用 127.0.0.1。
+    # - 服务器实际监听 0.0.0.0，Render 才能从外部访问到服务。
+    # - Render 会自动注入 PORT；本地没有 PORT 时默认使用 8000。
+    bind_host = os.environ.get("HOST", "0.0.0.0")
+    local_url = f"http://127.0.0.1:{PORT}"
+
+    print(f"食光菜谱启动：{local_url}")
+    print(f"服务监听地址：{bind_host}:{PORT}")
     print("数据接口：/api/bootstrap  /api/db-summary  /api/search?q=番茄  /api/recipes/R0001  POST /api/user-recipes  /api/recipe-comments")
     if not os.environ.get("ZHIPUAI_API_KEY"):
         print("提示：未检测到 ZHIPUAI_API_KEY，AI 问菜会自动降级为本地规则推荐。")
-    try:
-        webbrowser.open(url)
-    except Exception:
-        pass
-    ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+
+    # Render/云服务器环境不自动打开浏览器，本地运行时才尝试打开。
+    if not os.environ.get("RENDER"):
+        try:
+            webbrowser.open(local_url)
+        except Exception:
+            pass
+
+    ThreadingHTTPServer((bind_host, PORT), Handler).serve_forever()
