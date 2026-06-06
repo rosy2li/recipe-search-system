@@ -27,6 +27,8 @@ import re
 import urllib.error
 import urllib.request
 import webbrowser
+import time
+import threading
 
 ROOT = Path(__file__).resolve().parent
 PORT = int(os.environ.get("PORT", "8000"))
@@ -53,11 +55,21 @@ def load_dotenv() -> None:
             os.environ[key] = value
 
 
+def env_flag(name: str, default: str = "") -> bool:
+    return str(os.environ.get(name, default)).strip().lower() in {"1", "true", "yes", "on", "required"}
+
+
 def get_conn():
     try:
         import pymysql
     except ImportError as exc:
         raise RuntimeError("缺少 pymysql，请先执行：pip install -r requirements.txt") from exc
+
+    ssl_config = None
+    # TiDB Cloud Serverless/Starter 默认要求安全连接；本地 MySQL 不需要开启。
+    if env_flag("MYSQL_SSL"):
+        ssl_config = {"ssl": {}}
+
     return pymysql.connect(
         host=os.environ.get("MYSQL_HOST", "localhost"),
         port=int(os.environ.get("MYSQL_PORT", "3306")),
@@ -67,7 +79,28 @@ def get_conn():
         charset="utf8mb4",
         cursorclass=pymysql.cursors.DictCursor,
         autocommit=True,
+        connect_timeout=int(os.environ.get("MYSQL_CONNECT_TIMEOUT", "10")),
+        read_timeout=int(os.environ.get("MYSQL_READ_TIMEOUT", "30")),
+        write_timeout=int(os.environ.get("MYSQL_WRITE_TIMEOUT", "30")),
+        ssl=ssl_config,
     )
+
+
+# V54：云数据库访问优化。
+# 系统启动/第一次访问时批量读取菜谱，并将 bootstrap 数据缓存在内存中。
+# 这样既保留“前端一次拿全量菜谱”的简单逻辑，又避免每次打开首页都跨网络查询上百次 SQL。
+_BOOTSTRAP_CACHE: dict | None = None
+_BOOTSTRAP_CACHE_AT: float = 0.0
+_BOOTSTRAP_LOCK = threading.Lock()
+_RECIPE_CACHE: dict[str, dict] = {}
+
+
+def invalidate_bootstrap_cache() -> None:
+    global _BOOTSTRAP_CACHE, _BOOTSTRAP_CACHE_AT, _RECIPE_CACHE
+    with _BOOTSTRAP_LOCK:
+        _BOOTSTRAP_CACHE = None
+        _BOOTSTRAP_CACHE_AT = 0.0
+        _RECIPE_CACHE = {}
 
 
 def json_response(handler: SimpleHTTPRequestHandler, status: int, payload: dict | list) -> None:
@@ -142,41 +175,105 @@ def recipe_to_frontend(row: dict, ingredients: list[dict] | None = None, steps: 
 
 
 def fetch_recipe(recipe_id: str) -> dict | None:
+    recipe_id = str(recipe_id or "").strip()
+    if not recipe_id:
+        return None
+    cached = _RECIPE_CACHE.get(recipe_id)
+    if cached:
+        return cached
+    recipes = fetch_recipes_by_ids([recipe_id])
+    return recipes[0] if recipes else None
+
+
+def fetch_recipes_by_ids(recipe_ids: list[str]) -> list[dict]:
+    ids = [str(x).strip() for x in recipe_ids if str(x or "").strip()]
+    if not ids:
+        return []
+    placeholders = ",".join(["%s"] * len(ids))
+    order_map = {rid: index for index, rid in enumerate(ids)}
     with get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM recipe WHERE recipe_id=%s", (recipe_id,))
-            row = cur.fetchone()
-            if not row:
-                return None
+            cur.execute(f"SELECT * FROM recipe WHERE recipe_id IN ({placeholders})", tuple(ids))
+            rows = cur.fetchall()
             cur.execute(
-                """
-                SELECT i.ingredient_name, i.ingredient_type, ri.ingredient_role, ri.amount
+                f"""
+                SELECT ri.recipe_id, i.ingredient_name, i.ingredient_type, ri.ingredient_role, ri.amount, ri.id
                 FROM recipe_ingredient ri
                 JOIN ingredient i ON i.ingredient_id = ri.ingredient_id
-                WHERE ri.recipe_id=%s
-                ORDER BY ri.id
+                WHERE ri.recipe_id IN ({placeholders})
+                ORDER BY ri.recipe_id, ri.id
                 """,
-                (recipe_id,),
+                tuple(ids),
             )
-            ingredients = cur.fetchall()
+            ingredient_rows = cur.fetchall()
             cur.execute(
-                "SELECT step_no, step_text, step_image FROM recipe_step WHERE recipe_id=%s ORDER BY step_no",
-                (recipe_id,),
+                f"""
+                SELECT recipe_id, step_no, step_text, step_image
+                FROM recipe_step
+                WHERE recipe_id IN ({placeholders})
+                ORDER BY recipe_id, step_no
+                """,
+                tuple(ids),
             )
-            steps = cur.fetchall()
-    return recipe_to_frontend(row, ingredients, steps)
+            step_rows = cur.fetchall()
+
+    ingredient_map: dict[str, list[dict]] = {}
+    for row in ingredient_rows:
+        ingredient_map.setdefault(row["recipe_id"], []).append(row)
+    step_map: dict[str, list[dict]] = {}
+    for row in step_rows:
+        step_map.setdefault(row["recipe_id"], []).append(row)
+
+    recipes = [
+        recipe_to_frontend(row, ingredient_map.get(row["recipe_id"], []), step_map.get(row["recipe_id"], []))
+        for row in rows
+    ]
+    recipes.sort(key=lambda r: order_map.get(r.get("id"), 999999))
+    for recipe in recipes:
+        if recipe.get("id"):
+            _RECIPE_CACHE[recipe["id"]] = recipe
+    return recipes
 
 
 def fetch_all_recipes() -> list[dict]:
+    # V54 优化：原 V53 是 1 + N*3 次 SQL；这里改为 3 次 SQL 批量取回所有菜谱、食材、步骤。
     with get_conn() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT recipe_id FROM recipe ORDER BY recipe_id")
-            ids = [row["recipe_id"] for row in cur.fetchall()]
-    recipes = []
-    for recipe_id in ids:
-        recipe = fetch_recipe(recipe_id)
-        if recipe:
-            recipes.append(recipe)
+            cur.execute("SELECT * FROM recipe ORDER BY recipe_id")
+            rows = cur.fetchall()
+            cur.execute(
+                """
+                SELECT ri.recipe_id, i.ingredient_name, i.ingredient_type, ri.ingredient_role, ri.amount, ri.id
+                FROM recipe_ingredient ri
+                JOIN ingredient i ON i.ingredient_id = ri.ingredient_id
+                ORDER BY ri.recipe_id, ri.id
+                """
+            )
+            ingredient_rows = cur.fetchall()
+            cur.execute(
+                """
+                SELECT recipe_id, step_no, step_text, step_image
+                FROM recipe_step
+                ORDER BY recipe_id, step_no
+                """
+            )
+            step_rows = cur.fetchall()
+
+    ingredient_map: dict[str, list[dict]] = {}
+    for row in ingredient_rows:
+        ingredient_map.setdefault(row["recipe_id"], []).append(row)
+    step_map: dict[str, list[dict]] = {}
+    for row in step_rows:
+        step_map.setdefault(row["recipe_id"], []).append(row)
+
+    recipes = [
+        recipe_to_frontend(row, ingredient_map.get(row["recipe_id"], []), step_map.get(row["recipe_id"], []))
+        for row in rows
+    ]
+    _RECIPE_CACHE.clear()
+    for recipe in recipes:
+        if recipe.get("id"):
+            _RECIPE_CACHE[recipe["id"]] = recipe
     return recipes
 
 
@@ -210,9 +307,34 @@ def fetch_meta(recipes: list[dict]) -> dict:
     return meta
 
 
-def fetch_bootstrap() -> dict:
-    recipes = fetch_all_recipes()
-    return {"recipes": recipes, "meta": fetch_meta(recipes)}
+def fetch_bootstrap(force_refresh: bool = False) -> dict:
+    global _BOOTSTRAP_CACHE, _BOOTSTRAP_CACHE_AT
+    cache_ttl = int(os.environ.get("BOOTSTRAP_CACHE_TTL", "3600"))
+    now = time.time()
+    if (
+        not force_refresh
+        and _BOOTSTRAP_CACHE is not None
+        and (cache_ttl <= 0 or now - _BOOTSTRAP_CACHE_AT < cache_ttl)
+    ):
+        return _BOOTSTRAP_CACHE
+
+    with _BOOTSTRAP_LOCK:
+        now = time.time()
+        if (
+            not force_refresh
+            and _BOOTSTRAP_CACHE is not None
+            and (cache_ttl <= 0 or now - _BOOTSTRAP_CACHE_AT < cache_ttl)
+        ):
+            return _BOOTSTRAP_CACHE
+        start = time.time()
+        recipes = fetch_all_recipes()
+        payload = {"recipes": recipes, "meta": fetch_meta(recipes)}
+        payload["meta"]["version"] = "v54-cloud-cache"
+        payload["meta"]["cacheBuiltAt"] = int(time.time())
+        payload["meta"]["cacheBuildMs"] = int((time.time() - start) * 1000)
+        _BOOTSTRAP_CACHE = payload
+        _BOOTSTRAP_CACHE_AT = time.time()
+        return payload
 
 
 def search_recipes(params: dict) -> list[dict]:
@@ -267,8 +389,13 @@ def search_recipes(params: dict) -> list[dict]:
         with conn.cursor() as cur:
             cur.execute(sql, tuple(args))
             ids = [row["recipe_id"] for row in cur.fetchall()]
-    return [r for rid in ids if (r := fetch_recipe(rid))]
-
+    cached = _BOOTSTRAP_CACHE
+    if cached and cached.get("recipes"):
+        order = {rid: index for index, rid in enumerate(ids)}
+        matched = [r for r in cached["recipes"] if r.get("id") in order]
+        matched.sort(key=lambda r: order.get(r.get("id"), 999999))
+        return matched
+    return fetch_recipes_by_ids(ids)
 
 
 
@@ -590,6 +717,7 @@ def create_user_recipe(data: dict) -> dict:
     finally:
         conn.close()
 
+    invalidate_bootstrap_cache()
     recipe = fetch_recipe(recipe_id)
     if not recipe:
         raise RuntimeError("菜谱已写入，但回读失败")
@@ -607,7 +735,10 @@ def fetch_user_recipes() -> list[dict]:
                 """
             )
             ids = [row["recipe_id"] for row in cur.fetchall()]
-    return [r for rid in ids if (r := fetch_recipe(rid))]
+    cached = _BOOTSTRAP_CACHE
+    if cached and cached.get("recipes"):
+        return [r for r in cached["recipes"] if r.get("id") in set(ids)]
+    return fetch_recipes_by_ids(ids)
 
 
 def fetch_recipe_comments(recipe_id: str, limit: int = 50) -> list[dict]:
@@ -872,7 +1003,9 @@ class Handler(SimpleHTTPRequestHandler):
         parsed = urlparse(self.path)
         try:
             if parsed.path == "/api/bootstrap":
-                json_response(self, 200, {"ok": True, "data": fetch_bootstrap()})
+                params = parse_qs(parsed.query)
+                refresh = (params.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
+                json_response(self, 200, {"ok": True, "data": fetch_bootstrap(force_refresh=refresh)})
                 return
             if parsed.path == "/api/db-summary":
                 with get_conn() as conn:
@@ -942,7 +1075,7 @@ class Handler(SimpleHTTPRequestHandler):
         try:
             data = read_json_body(self, max_bytes=MAX_UPLOAD_JSON_BYTES)
             recipe = create_user_recipe(data)
-            json_response(self, 201, {"ok": True, "message": "菜谱上传成功", "recipe": recipe})
+            json_response(self, 201, {"ok": True, "message": "菜谱上传成功，缓存已自动刷新", "recipe": recipe})
         except ValueError as exc:
             json_response(self, 400, {"ok": False, "message": str(exc)})
         except Exception as exc:
